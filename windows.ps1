@@ -143,12 +143,27 @@ if (Test-Path $PROTOCOL_EXEC) {
     Write-Host "Downloading Node..."
     Invoke-WebRequest -Uri $DOWNLOAD_PROTOCOL_URL -OutFile $PROTOCOL_EXEC
 }
+Write-Host "You can use any LLM from Hugging Face, but only in the .gguf format. Below is a table with examples."
+Write-Host "| HuggingFace LLM Repository                | LLM Name                                             | ~VRAM, Gb |"
+Write-Host "|-------------------------------------------|------------------------------------------------------|-----------|"
+Write-Host "| Qwen/Qwen2.5-1.5B-Instruct-GGUF           | qwen2.5-1.5b-instruct-q4_k_m.gguf                    | 1.15      |"
+Write-Host "| Qwen/Qwen2.5-3B-Instruct-GGUF             | qwen2.5-3b-instruct-q4_k_m.gguf                      | 2.1       |"
+Write-Host "| Qwen/Qwen2.5-7B-Instruct-GGUF             | qwen2.5-7b-instruct-q4_k_m-00001-of-00002.gguf       | 4.8       |"
+Write-Host "| Qwen/Qwen2.5-32B-Instruct-GGUF            | qwen2.5-32b-instruct-q4_k_m-00001-of-00005.gguf      | 20        |"
+Write-Host "| Qwen/Qwen2.5-72B-Instruct-GGUF            | qwen2.5-72b-instruct-q4_k_m-00001-of-00012.gguf      | 47        |"
+Write-Host "| Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF     | qwen2.5-coder-1.5b-instruct-q4_k_m.gguf              | 1.15      |"
+Write-Host "| Qwen/Qwen2.5-Coder-3B-Instruct-GGUF       | qwen2.5-coder-3b-instruct-q4_k_m.gguf                | 2.1       |"
+Write-Host "| Qwen/Qwen2.5-Coder-7B-Instruct-GGUF       | qwen2.5-coder-7b-instruct-q4_k_m-00001-of-00002.gguf | 4.8       |"
+Write-Host "| Qwen/Qwen2.5-Coder-32B-Instruct-GGUF      | qwen2.5-coder-32b-instruct-q4_k_m.gguf               | 20        |"
+Write-Host "| bartowski/Ministral-8B-Instruct-2410-GGUF | Ministral-8B-Instruct-2410-Q4_K_M.gguf               | 5.2       |"
+Write-Host "| bartowski/Llama-3.2-3B-Instruct-GGUF      | Llama-3.2-3B-Instruct-Q4_K_M.gguf                    | 2.2       |"
+Write-Host "| bartowski/INTELLECT-1-Instruct-GGUF       | INTELLECT-1-Instruct-Q4_K_M.gguf                     | 6.5       |"
 
-$LLM_HF_REPO = Read-Host "Enter HuggingFace LLM repository (default: Qwen/Qwen2.5-3B-Instruct-GGUF)"
+$LLM_HF_REPO = Read-Host "Enter HuggingFace LLM repository (Press Enter to use the default: Qwen/Qwen2.5-3B-Instruct-GGUF)"
 if (-Not $LLM_HF_REPO) { $LLM_HF_REPO = "Qwen/Qwen2.5-3B-Instruct-GGUF" }
 
-$LLM_HF_MODEL_NAME = Read-Host "Enter HuggingFace LLM model name only with .gguf extension (default: qwen2.5-3b-instruct-q8_0.gguf)"
-if (-Not $LLM_HF_MODEL_NAME) { $LLM_HF_MODEL_NAME = "qwen2.5-3b-instruct-q8_0.gguf" }
+$LLM_HF_MODEL_NAME = Read-Host "Enter HuggingFace LLM model name only with .gguf extension (Press Enter to use the default: qwen2.5-3b-instruct-q4_k_m.gguf)"
+if (-Not $LLM_HF_MODEL_NAME) { $LLM_HF_MODEL_NAME = "qwen2.5-3b-instruct-q4_k_m.gguf" }
 
 if (Test-Path $ACCOUNT_PRIVATE_KEY_FILE) {
     $ACCOUNT_PRIVATE_KEY = Get-Content $ACCOUNT_PRIVATE_KEY_FILE
@@ -158,7 +173,7 @@ if (Test-Path $ACCOUNT_PRIVATE_KEY_FILE) {
         Invoke-WebRequest -Uri $DOWNLOAD_CONVERTOR_URL -OutFile $CONVERTOR_EXEC
     }
     while ($true) {
-        $ACCOUNT_SEED_PHRASE = Read-Host "Enter account seed phrase"
+        $ACCOUNT_SEED_PHRASE = Read-Host "Enter your account recovery phrase (12, 18, or 24 words), then press Enter: "
         try {
             $ACCOUNT_PRIVATE_KEY = & $CONVERTOR_EXEC $ACCOUNT_SEED_PHRASE
             if ($LASTEXITCODE -ne 0) {
@@ -169,7 +184,7 @@ if (Test-Path $ACCOUNT_PRIVATE_KEY_FILE) {
                 break
             }
         } catch {
-            Write-Host "Error: Please check the seed phrase and try again."
+            Write-Host "Error: Please check the recovery phrase and try again."
             continue
         }
     }

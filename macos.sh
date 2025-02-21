@@ -92,12 +92,27 @@ else
     chmod +x "$PROTOCOL_EXEC"
     echo "Node downloaded to: $PROTOCOL_EXEC"
 fi
+echo "You can use any LLM from Hugging Face, but only in the .gguf format. Below is a table with examples."
+echo "| HuggingFace LLM Repository                | LLM Name                                             | ~VRAM, Gb |"
+echo "|-------------------------------------------|------------------------------------------------------|-----------|"
+echo "| Qwen/Qwen2.5-1.5B-Instruct-GGUF           | qwen2.5-1.5b-instruct-q4_k_m.gguf                    | 1.15      |"
+echo "| Qwen/Qwen2.5-3B-Instruct-GGUF             | qwen2.5-3b-instruct-q4_k_m.gguf                      | 2.1       |"
+echo "| Qwen/Qwen2.5-7B-Instruct-GGUF             | qwen2.5-7b-instruct-q4_k_m-00001-of-00002.gguf       | 4.8       |"
+echo "| Qwen/Qwen2.5-32B-Instruct-GGUF            | qwen2.5-32b-instruct-q4_k_m-00001-of-00005.gguf      | 20        |"
+echo "| Qwen/Qwen2.5-72B-Instruct-GGUF            | qwen2.5-72b-instruct-q4_k_m-00001-of-00012.gguf      | 47        |"
+echo "| Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF     | qwen2.5-coder-1.5b-instruct-q4_k_m.gguf              | 1.15      |"
+echo "| Qwen/Qwen2.5-Coder-3B-Instruct-GGUF       | qwen2.5-coder-3b-instruct-q4_k_m.gguf                | 2.1       |"
+echo "| Qwen/Qwen2.5-Coder-7B-Instruct-GGUF       | qwen2.5-coder-7b-instruct-q4_k_m-00001-of-00002.gguf | 4.8       |"
+echo "| Qwen/Qwen2.5-Coder-32B-Instruct-GGUF      | qwen2.5-coder-32b-instruct-q4_k_m.gguf               | 20        |"
+echo "| bartowski/Ministral-8B-Instruct-2410-GGUF | Ministral-8B-Instruct-2410-Q4_K_M.gguf               | 5.2       |"
+echo "| bartowski/Llama-3.2-3B-Instruct-GGUF      | Llama-3.2-3B-Instruct-Q4_K_M.gguf                    | 2.2       |"
+echo "| bartowski/INTELLECT-1-Instruct-GGUF       | INTELLECT-1-Instruct-Q4_K_M.gguf                     | 6.5       |"
 
-read -r -p "Enter HuggingFace LLM repository (default: Qwen/Qwen2.5-3B-Instruct-GGUF): " LLM_HF_REPO
+read -r -p "Enter HuggingFace LLM repository (Press Enter to use the default: Qwen/Qwen2.5-3B-Instruct-GGUF): " LLM_HF_REPO
 LLM_HF_REPO=${LLM_HF_REPO:-"Qwen/Qwen2.5-3B-Instruct-GGUF"}
 
-read -r -p "Enter HuggingFace LLM model name only with .gguf extension (default: qwen2.5-3b-instruct-q8_0.gguf): " LLM_HF_MODEL_NAME
-LLM_HF_MODEL_NAME=${LLM_HF_MODEL_NAME:-"qwen2.5-3b-instruct-q8_0.gguf"}
+read -r -p "Enter HuggingFace LLM model name only with .gguf extension (Press Enter to use the default: qwen2.5-3b-instruct-q4_k_m.gguf): " LLM_HF_MODEL_NAME
+LLM_HF_MODEL_NAME=${LLM_HF_MODEL_NAME:-"qwen2.5-3b-instruct-q4_k_m.gguf"}
 
 echo "Using LLM Repository: $LLM_HF_REPO"
 echo "Using LLM Model Name: $LLM_HF_MODEL_NAME"
@@ -111,10 +126,10 @@ else
         chmod +x "$CONVERTOR_EXEC"
     fi
     while true; do
-        read -r -p "Enter account seed phrase: " ACCOUNT_SEED_PHRASE
+        read -r -p "Enter your account recovery phrase (12, 18, or 24 words), then press Enter: " ACCOUNT_SEED_PHRASE
         echo
         if ! ACCOUNT_PRIVATE_KEY=$("$CONVERTOR_EXEC" "$ACCOUNT_SEED_PHRASE"); then
-            echo "Error: Please check the seed phrase and try again."
+            echo "Error: Please check the recovery phrase and try again."
             continue
         else
             echo "$ACCOUNT_PRIVATE_KEY" > "$ACCOUNT_PRIVATE_KEY_FILE"
