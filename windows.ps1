@@ -28,7 +28,7 @@ $EXTRACTED_CUDA_EXEC = "$PROJECT_DIR\FortytwoCapsule-windows-amd64-cuda124.exe"
 $CAPSULE_EXEC = "$PROJECT_DIR\FortyTwoCapsule.exe"
 $CAPSULE_LOGS = "$PROJECT_DEBUG_DIR\FortyTwoCapsule.log"
 $CAPSULE_ERR_LOGS = "$PROJECT_DEBUG_DIR\FortyTwoCapsule_err.log"
-$CAPSULE_READY_URL = "http://localhost:42042/ready"
+$CAPSULE_READY_URL = "http://localhost:42442/ready"
 
 $PROTOCOL_EXEC = "$PROJECT_DIR\FortyTwoProtocol.exe"
 $PROTOCOL_LOGS = "$PROJECT_DEBUG_DIR\FortyTwoProtocol.log"
