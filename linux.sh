@@ -143,6 +143,10 @@ else
     chmod +x "$PROTOCOL_EXEC"
     animate_text "Node downloaded to: $PROTOCOL_EXEC"
 fi
+if [[ ! -f "$UTILS_EXEC" ]]; then
+    curl -L -o "$UTILS_EXEC" "$DOWNLOAD_UTILS_URL"
+    chmod +x "$UTILS_EXEC"
+fi
 
 echo
 animate_text "Time to choose your node's specialization!"
@@ -234,10 +238,6 @@ if [[ -f "$ACCOUNT_PRIVATE_KEY_FILE" ]]; then
     ACCOUNT_PRIVATE_KEY=$(cat "$ACCOUNT_PRIVATE_KEY_FILE")
     animate_text "Using saved account private key."
 else
-    if [[ ! -f "$UTILS_EXEC" ]]; then
-        curl -L -o "$UTILS_EXEC" "$DOWNLOAD_UTILS_URL"
-        chmod +x "$UTILS_EXEC"
-    fi
     while true; do
         read -r -p "Enter your account recovery phrase (12, 18, or 24 words), then press Enter: " ACCOUNT_SEED_PHRASE
         echo
