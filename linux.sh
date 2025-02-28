@@ -1,9 +1,43 @@
 #!/bin/bash
 
-if [[ $EUID -ne 0 ]]; then
-    echo "Restarting the script with sudo..."
-    exec sudo bash "$0" "$@"
-fi
+animate_text() {
+    local text="$1"
+    for ((i=0; i<${#text}; i++)); do
+        echo -n "${text:$i:1}"
+        sleep 0.01
+    done
+    echo
+}
+
+auto_select_model() {
+    if command -v nvidia-smi &> /dev/null; then
+        AVAILABLE_MEM=$(nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits | head -n 1 | awk '{print $1 / 1024}')
+        animate_text "System analysis: ${AVAILABLE_MEM}GB VRAM detected"
+    else
+        AVAILABLE_MEM=$(awk '/MemTotal/ {print $2 / 1024 / 1024}' /proc/meminfo)
+        animate_text "System analysis: ${AVAILABLE_MEM}GB RAM detected"
+    fi
+
+    AVAILABLE_MEM_INT=$(printf "%.0f" "$AVAILABLE_MEM")
+
+    if [ "$AVAILABLE_MEM_INT" -ge 16 ]; then
+        animate_text "Recommended: TELEOLOGY PYLON for high-performance systems"
+        LLM_HF_REPO="bartowski/INTELLECT-1-Instruct-GGUF"
+        LLM_HF_MODEL_NAME="INTELLECT-1-Instruct-Q4_K_M.gguf"
+        NODE_NAME="TELEOLOGY PYLON"
+    elif [ "$AVAILABLE_MEM_INT" -ge 8 ]; then
+        animate_text "Recommended: NOUMENAL PYLON for balanced capability"
+        LLM_HF_REPO="bartowski/Llama-3.2-3B-Instruct-GGUF"
+        LLM_HF_MODEL_NAME="Llama-3.2-3B-Instruct-Q4_K_M.gguf"
+        NODE_NAME="NOUMENAL PYLON"
+    else
+        animate_text "Recommended: NEXUS optimized for efficiency"
+        LLM_HF_REPO="Qwen/Qwen2.5-1.5B-Instruct-GGUF"
+        LLM_HF_MODEL_NAME="qwen2.5-1.5b-instruct-q4_k_m.gguf"
+        NODE_NAME="Nexus-Compact"
+    fi
+}
+
 
 BANNER="
 ███████╗ ██████╗ ██████╗ ████████╗██╗   ██╗████████╗██╗    ██╗ ██████╗
@@ -21,72 +55,74 @@ BANNER="
 ╚═╝  ╚═══╝╚══════╝   ╚═╝    ╚══╝╚══╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
 "
 echo "$BANNER"
-
-PROJECT_DIR="/opt/FortytwoNode"
+animate_text "Welcome to the FortytwoNode Network - Join the Decentralized AI Revolution!"
+echo
+PROJECT_DIR="./FortytwoNode"
 PROJECT_DEBUG_DIR="$PROJECT_DIR/debug"
 
-CAPSULE_EXEC="$PROJECT_DIR/FortyTwoCapsule"
-CAPSULE_LOGS="$PROJECT_DEBUG_DIR/FortyTwoCapsule.logs"
+CAPSULE_EXEC="$PROJECT_DIR/FortytwoCapsule"
+CAPSULE_LOGS="$PROJECT_DEBUG_DIR/FortytwoCapsule.logs"
 CAPSULE_READY_URL="http://0.0.0.0:42442/ready"
 
-PROTOCOL_EXEC="$PROJECT_DIR/FortyTwoProtocol"
-PROTOCOL_LOGS="$PROJECT_DEBUG_DIR/FortyTwoProtocol.logs"
+PROTOCOL_EXEC="$PROJECT_DIR/FortytwoProtocol"
 PROTOCOL_DB_DIR="$PROJECT_DEBUG_DIR/internal_db"
 ACCOUNT_PRIVATE_KEY_FILE="$PROJECT_DIR/.account_private_key"
 
-DOWNLOAD_CONVERTOR_URL="https://fortytwo-network-public.s3.us-east-2.amazonaws.com/utilities/phrase_to_pkey_linux"
-CONVERTOR_EXEC="$PROJECT_DIR/phrase_to_pkey"
+DOWNLOAD_UTILS_URL="https://fortytwo-network-public.s3.us-east-2.amazonaws.com/utilities/FortytwoUtilsLinux"
+UTILS_EXEC="$PROJECT_DIR/FortytwoUtils"
 
+animate_text "Preparing your node environment..."
 
 if [[ ! -d "$PROJECT_DEBUG_DIR" ]]; then
     mkdir -p "$PROJECT_DEBUG_DIR"
-    echo "Project directory created: $PROJECT_DIR"
+    animate_text "Project directory created: $PROJECT_DIR"
 else
-    echo "Project directory already exists: $PROJECT_DIR"
+    animate_text "Project directory already exists: $PROJECT_DIR"
 fi
 
 USER=$(logname)
 chown "$USER:$USER" "$PROJECT_DIR"
 
 if ! command -v curl &> /dev/null; then
-    echo "curl is not installed. Installing curl..."
+    animate_text "curl is not installed. Installing curl..."
     apt update && apt install -y curl
 fi
 
 PROTOCOL_VERSION=$(curl -s "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/protocol/latest")
-echo "Latest protocol version is $PROTOCOL_VERSION"
+animate_text "Latest protocol version is $PROTOCOL_VERSION"
 DOWNLOAD_PROTOCOL_URL="https://fortytwo-network-public.s3.us-east-2.amazonaws.com/protocol/v$PROTOCOL_VERSION/FortytwoProtocolNode-linux-amd64"
 
 CAPSULE_VERSION=$(curl -s "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/capsule/latest")
-echo "Latest capsule version is $CAPSULE_VERSION"
+animate_text "Latest capsule version is $CAPSULE_VERSION"
 DOWNLOAD_CAPSULE_URL="https://fortytwo-network-public.s3.us-east-2.amazonaws.com/capsule/v$CAPSULE_VERSION/FortytwoCapsule-linux-amd64"
 
+animate_text "Downloading and configuring core components..."
 
 if [[ -f "$CAPSULE_EXEC" ]]; then
     CURRENT_CAPSULE_VERSION_OUTPUT=$("$CAPSULE_EXEC" --version 2>/dev/null)
     if [[ "$CURRENT_CAPSULE_VERSION_OUTPUT" == *"$CAPSULE_VERSION"* ]]; then
-        echo "Capsule is already up to date (version found: $CURRENT_PROTOCOL_VERSION_OUTPUT). Skipping download."
+        animate_text "Capsule is already up to date (version found: $CURRENT_PROTOCOL_VERSION_OUTPUT). Skipping download."
     else
         if command -v nvidia-smi &> /dev/null; then
-            echo "NVIDIA detected. Downloading capsule for NVIDIA systems..."
+            animate_text "NVIDIA detected. Downloading capsule for NVIDIA systems..."
             DOWNLOAD_CAPSULE_URL+="-cuda124"
         else
-            echo "No NVIDIA GPU detected. Downloading CPU capsule..."
+            animate_text "No NVIDIA GPU detected. Downloading CPU capsule..."
         fi
         curl -L -o "$CAPSULE_EXEC" "$DOWNLOAD_CAPSULE_URL"
         chmod +x "$CAPSULE_EXEC"
-        echo "Capsule downloaded to: $CAPSULE_EXEC"
+        animate_text "Capsule downloaded to: $CAPSULE_EXEC"
     fi
 else
     if command -v nvidia-smi &> /dev/null; then
-        echo "NVIDIA detected. Downloading capsule for NVIDIA systems..."
+        animate_text "NVIDIA detected. Downloading capsule for NVIDIA systems..."
         DOWNLOAD_CAPSULE_URL+="-cuda124"
     else
-        echo "No NVIDIA GPU detected. Downloading CPU capsule..."
+        animate_text "No NVIDIA GPU detected. Downloading CPU capsule..."
     fi
     curl -L -o "$CAPSULE_EXEC" "$DOWNLOAD_CAPSULE_URL"
     chmod +x "$CAPSULE_EXEC"
-    echo "Capsule downloaded to: $CAPSULE_EXEC"
+    animate_text "Capsule downloaded to: $CAPSULE_EXEC"
 fi
 
 
@@ -94,56 +130,118 @@ if [[ -f "$PROTOCOL_EXEC" ]]; then
     CURRENT_PROTOCOL_VERSION_OUTPUT=$("$PROTOCOL_EXEC" --version 2>/dev/null)
 
     if [[ "$CURRENT_PROTOCOL_VERSION_OUTPUT" == *"$PROTOCOL_VERSION"* ]]; then
-        echo "Node is already up to date (version found: $CURRENT_PROTOCOL_VERSION_OUTPUT). Skipping download."
+        animate_text "Node is already up to date (version found: $CURRENT_PROTOCOL_VERSION_OUTPUT). Skipping download."
     else
-        echo "Node is outdated (found version: $CURRENT_PROTOCOL_VERSION_OUTPUT, expected: $PROTOCOL_VERSION). Downloading new version..."
+        animate_text "Node is outdated (found version: $CURRENT_PROTOCOL_VERSION_OUTPUT, expected: $PROTOCOL_VERSION). Downloading new version..."
         curl -L -o "$PROTOCOL_EXEC" "$DOWNLOAD_PROTOCOL_URL"
         chmod +x "$PROTOCOL_EXEC"
-        echo "Node downloaded to: $PROTOCOL_EXEC"
+        animate_text "Node downloaded to: $PROTOCOL_EXEC"
     fi
 else
-    echo "Node not found. Downloading..."
+    animate_text "Node not found. Downloading..."
     curl -L -o "$PROTOCOL_EXEC" "$DOWNLOAD_PROTOCOL_URL"
     chmod +x "$PROTOCOL_EXEC"
-    echo "Node downloaded to: $PROTOCOL_EXEC"
+    animate_text "Node downloaded to: $PROTOCOL_EXEC"
 fi
-echo "You can use any LLM from Hugging Face, but only in the .gguf format. Below is a table with examples."
-echo "| HuggingFace LLM Repository                | LLM Name                                             | ~VRAM, Gb |"
-echo "|-------------------------------------------|------------------------------------------------------|-----------|"
-echo "| Qwen/Qwen2.5-1.5B-Instruct-GGUF           | qwen2.5-1.5b-instruct-q4_k_m.gguf                    | 1.15      |"
-echo "| Qwen/Qwen2.5-3B-Instruct-GGUF             | qwen2.5-3b-instruct-q4_k_m.gguf                      | 2.1       |"
-echo "| Qwen/Qwen2.5-7B-Instruct-GGUF             | qwen2.5-7b-instruct-q4_k_m-00001-of-00002.gguf       | 4.8       |"
-echo "| Qwen/Qwen2.5-32B-Instruct-GGUF            | qwen2.5-32b-instruct-q4_k_m-00001-of-00005.gguf      | 20        |"
-echo "| Qwen/Qwen2.5-72B-Instruct-GGUF            | qwen2.5-72b-instruct-q4_k_m-00001-of-00012.gguf      | 47        |"
-echo "| Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF     | qwen2.5-coder-1.5b-instruct-q4_k_m.gguf              | 1.15      |"
-echo "| Qwen/Qwen2.5-Coder-3B-Instruct-GGUF       | qwen2.5-coder-3b-instruct-q4_k_m.gguf                | 2.1       |"
-echo "| Qwen/Qwen2.5-Coder-7B-Instruct-GGUF       | qwen2.5-coder-7b-instruct-q4_k_m-00001-of-00002.gguf | 4.8       |"
-echo "| Qwen/Qwen2.5-Coder-32B-Instruct-GGUF      | qwen2.5-coder-32b-instruct-q4_k_m.gguf               | 20        |"
-echo "| bartowski/Ministral-8B-Instruct-2410-GGUF | Ministral-8B-Instruct-2410-Q4_K_M.gguf               | 5.2       |"
-echo "| bartowski/Llama-3.2-3B-Instruct-GGUF      | Llama-3.2-3B-Instruct-Q4_K_M.gguf                    | 2.2       |"
-echo "| bartowski/INTELLECT-1-Instruct-GGUF       | INTELLECT-1-Instruct-Q4_K_M.gguf                     | 6.5       |"
 
-read -r -p "Enter HuggingFace LLM repository (Press Enter to use the default: Qwen/Qwen2.5-3B-Instruct-GGUF): " LLM_HF_REPO
-LLM_HF_REPO=${LLM_HF_REPO:-"Qwen/Qwen2.5-3B-Instruct-GGUF"}
+echo
+animate_text "Time to choose your node's specialization!"
+echo
+echo "Every AI node in the Fortytwo Network has unique strengths."
+echo "Choose how your node will contribute to the collective intelligence:"
+echo
+echo "╔═══════════════════════════════════════════════════════════════════════════╗"
+echo "║ 0. ⦿  AUTO-SELECT - Optimal Configuration                                 ║"
+echo "║    Let the system determine the best model for your hardware.             ║"
+echo "║    Balanced for performance and capabilities.                             ║"
+echo "╠═══════════════════════════════════════════════════════════════════════════╣"
+echo "║ 1. ◉  NOUMENAL PYLON - General Knowledge                                  ║"
+echo "║    Versatile multi-domain intelligence core with balanced capabilities.   ║"
+echo "║    Model: Llama-3.2-3B-Instruct (2.2GB VRAM)                              ║"
+echo "╠═══════════════════════════════════════════════════════════════════════════╣"
+echo "║ 2. ⬢  TELEOLOGY PYLON - Advanced Reasoning                                ║"
+echo "║    High-precision logical analysis matrix optimized for problem-solving.  ║"
+echo "║    Model: INTELLECT-1-Instruct (6.5GB VRAM)                               ║"
+echo "╠═══════════════════════════════════════════════════════════════════════════╣"
+echo "║ 3. ⌬  MACHINIC PYLON - Programming & Technical                            ║"
+echo "║    Specialized system for code synthesis and framework construction.      ║"
+echo "║    Model: Qwen2.5-Coder-7B-Instruct (4.8GB VRAM)                          ║"
+echo "╠═══════════════════════════════════════════════════════════════════════════╣"
+echo "║ 4. ⎔  SCHOLASTIC PYLON - Academic Knowledge                               ║"
+echo "║    Advanced data integration and research synthesis protocol.             ║"
+echo "║    Model: Ministral-8B-Instruct-2410 (5.2GB VRAM)                         ║"
+echo "╠═══════════════════════════════════════════════════════════════════════════╣"
+echo "║ 5. ⌖  LOGOTOPOLOGY PYLON - Language & Writing                             ║"
+echo "║    Enhanced natural language and communication protocol interface.        ║"
+echo "║    Model: Qwen2.5-7B-Instruct (4.8GB VRAM)                                ║"
+echo "╠═══════════════════════════════════════════════════════════════════════════╣"
+echo "║ 6. ⎋  CUSTOM - Advanced Configuration                                     ║"
+echo "╚═══════════════════════════════════════════════════════════════════════════╝"
+echo
 
-read -r -p "Enter HuggingFace LLM model name only with .gguf extension (Press Enter to use the default: qwen2.5-3b-instruct-q4_k_m.gguf): " LLM_HF_MODEL_NAME
-LLM_HF_MODEL_NAME=${LLM_HF_MODEL_NAME:-"qwen2.5-3b-instruct-q4_k_m.gguf"}
+read -r -p "Select your node's specialization [0-6] (0 for auto-select): " NODE_CLASS
 
-echo "Using LLM Repository: $LLM_HF_REPO"
-echo "Using LLM Model Name: $LLM_HF_MODEL_NAME"
+case $NODE_CLASS in
+    0)
+        animate_text "Analyzing system for optimal configuration..."
+        auto_select_model
+        ;;
+    1)
+        LLM_HF_REPO="bartowski/Llama-3.2-3B-Instruct-GGUF"
+        LLM_HF_MODEL_NAME="Llama-3.2-3B-Instruct-Q4_K_M.gguf"
+        NODE_NAME="NOUMENAL PYLON"
+        ;;
+    2)
+        LLM_HF_REPO="bartowski/INTELLECT-1-Instruct-GGUF"
+        LLM_HF_MODEL_NAME="INTELLECT-1-Instruct-Q4_K_M.gguf"
+        NODE_NAME="TELEOLOGY PYLON"
+        ;;
+    3)
+        LLM_HF_REPO="Qwen/Qwen2.5-Coder-7B-Instruct-GGUF"
+        LLM_HF_MODEL_NAME="qwen2.5-coder-7b-instruct-q4_k_m-00001-of-00002.gguf"
+        NODE_NAME="MACHINIC PYLON"
+        ;;
+    4)
+        LLM_HF_REPO="bartowski/Ministral-8B-Instruct-2410-GGUF"
+        LLM_HF_MODEL_NAME="Ministral-8B-Instruct-2410-Q4_K_M.gguf"
+        NODE_NAME="SCHOLASTIC PYLON"
+        ;;
+    5)
+        LLM_HF_REPO="Qwen/Qwen2.5-7B-Instruct-GGUF"
+        LLM_HF_MODEL_NAME="qwen2.5-7b-instruct-q4_k_m-00001-of-00002.gguf"
+        NODE_NAME="LOGOTOPOLOGY PYLON"
+        ;;
+    6)
+        echo
+        echo "═════════════════════ ADVANCED SETUP ═════════════════════"
+        echo "This option is for users familiar with language models"
+        echo
+
+        read -r -p "Enter HuggingFace repository (e.g., Qwen/Qwen2.5-3B-Instruct-GGUF): " LLM_HF_REPO
+        read -r -p "Enter model filename (e.g., qwen2.5-3b-instruct-q4_k_m.gguf): " LLM_HF_MODEL_NAME
+        NODE_NAME="Custom (HF: ${LLM_HF_REPO##*/})"
+        ;;
+    *)
+        animate_text "No selection made. Proceeding with auto-select..."
+        auto_select_model
+        ;;
+esac
+animate_text "${NODE_NAME} is selected"
+animate_text "Downloading model and preparing the environment (this may take several minutes)..."
+"$UTILS_EXEC" --hf-repo "$LLM_HF_REPO" --hf-model-name "$LLM_HF_MODEL_NAME"
 
 if [[ -f "$ACCOUNT_PRIVATE_KEY_FILE" ]]; then
     ACCOUNT_PRIVATE_KEY=$(cat "$ACCOUNT_PRIVATE_KEY_FILE")
-    echo "Using saved account private key."
+    animate_text "Using saved account private key."
 else
-    if [[ ! -f "$CONVERTOR_EXEC" ]]; then
-        curl -L -o "$CONVERTOR_EXEC" "$DOWNLOAD_CONVERTOR_URL"
-        chmod +x "$CONVERTOR_EXEC"
+    if [[ ! -f "$UTILS_EXEC" ]]; then
+        curl -L -o "$UTILS_EXEC" "$DOWNLOAD_UTILS_URL"
+        chmod +x "$UTILS_EXEC"
     fi
     while true; do
         read -r -p "Enter your account recovery phrase (12, 18, or 24 words), then press Enter: " ACCOUNT_SEED_PHRASE
         echo
-        if ! ACCOUNT_PRIVATE_KEY=$("$CONVERTOR_EXEC" "$ACCOUNT_SEED_PHRASE"); then
+        if ! ACCOUNT_PRIVATE_KEY=$("$UTILS_EXEC" --phrase "$ACCOUNT_SEED_PHRASE"); then
             echo "Error: Please check the recovery phrase and try again."
             continue
         else
@@ -154,34 +252,34 @@ else
     done
 fi
 
-echo "Setup completed."
-echo "Run FortytwoNode."
-
+animate_text "Setup completed."
+clear
+echo "$BANNER"
+animate_text "Starting Capsule.."
 "$CAPSULE_EXEC" --llm-hf-repo "$LLM_HF_REPO" --llm-hf-model-name "$LLM_HF_MODEL_NAME" > "$CAPSULE_LOGS" 2>&1 &
 CAPSULE_PID=$!
 
-echo "Be patient during the first launch of the capsule; it will take some time to download the model artifacts, depending on your internet connection."
-echo "Waiting for Capsule download models weight and started..."
+animate_text "Be patient during the first launch of the capsule; it will take some time."
 while true; do
     STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$CAPSULE_READY_URL")
     if [[ "$STATUS_CODE" == "200" ]]; then
-        echo "Capsule is ready!"
+        animate_text "Capsule is ready!"
         break
     else
-        echo "Capsule is not ready. Retrying in 5 seconds..."
+        # Capsule is not ready. Retrying in 5 seconds...
         sleep 5
     fi
 done
-
-"$PROTOCOL_EXEC" --account-private-key "$ACCOUNT_PRIVATE_KEY" --db-folder "$PROTOCOL_DB_DIR" > "$PROTOCOL_LOGS" 2>&1 &
+animate_text "Starting Protocol.."
+"$PROTOCOL_EXEC" --account-private-key "$ACCOUNT_PRIVATE_KEY" --db-folder "$PROTOCOL_DB_DIR" &
 PROTOCOL_PID=$!
 
 cleanup() {
-    echo "Stopping capsule..."
+    animate_text "Stopping capsule..."
     kill "$CAPSULE_PID" 2>/dev/null
-    echo "Stopping protocol..."
+    animate_text "Stopping protocol..."
     kill "$PROTOCOL_PID" 2>/dev/null
-    echo "Processes stopped. Exiting."
+    animate_text "Processes stopped. Exiting."
     exit 0
 }
 
@@ -189,15 +287,14 @@ trap cleanup SIGINT SIGTERM SIGHUP EXIT
 
 while true; do
     if ! ps -p "$CAPSULE_PID" > /dev/null; then
-        echo "Capsule has stopped. Exiting..."
+        animate_text "Capsule has stopped."
         exit 1
     fi
 
     if ! ps -p "$PROTOCOL_PID" > /dev/null; then
-        echo "Node has stopped.  Exiting..."
+        animate_text "Node has stopped."
         exit 1
     fi
 
-    echo "FortytwoNode is running..."
     sleep 5
 done

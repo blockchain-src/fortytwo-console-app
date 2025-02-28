@@ -11,19 +11,19 @@ animate_text() {
 
 auto_select_model() {
     AVAILABLE_MEM=$(( $(sysctl -n hw.memsize) / 1024 / 1024 / 1024 ))
-    echo "System analysis: ${AVAILABLE_MEM}GB RAM detected"
+    animate_text "System analysis: ${AVAILABLE_MEM}GB RAM detected"
     if [ $AVAILABLE_MEM -ge 16 ]; then
-        echo "Recommended: SENTINEL for high-performance systems"
+        animate_text "Recommended: SENTINEL for high-performance systems"
         LLM_HF_REPO="bartowski/INTELLECT-1-Instruct-GGUF"
         LLM_HF_MODEL_NAME="INTELLECT-1-Instruct-Q4_K_M.gguf"
         NODE_NAME="Sentinel"
     elif [ $AVAILABLE_MEM -ge 8 ]; then
-        echo "Recommended: NEXUS for balanced capability"
+        animate_text "Recommended: NEXUS for balanced capability"
         LLM_HF_REPO="bartowski/Llama-3.2-3B-Instruct-GGUF"
         LLM_HF_MODEL_NAME="Llama-3.2-3B-Instruct-Q4_K_M.gguf"
         NODE_NAME="Nexus"
     else
-        echo "Recommended: NEXUS optimized for efficiency"
+        animate_text "Recommended: NEXUS optimized for efficiency"
         LLM_HF_REPO="Qwen/Qwen2.5-1.5B-Instruct-GGUF"
         LLM_HF_MODEL_NAME="qwen2.5-1.5b-instruct-q4_k_m.gguf"
         NODE_NAME="Nexus-Compact"
@@ -56,7 +56,6 @@ CAPSULE_LOGS="$PROJECT_DEBUG_DIR/FortytwoCapsule.logs"
 CAPSULE_READY_URL="http://0.0.0.0:42442/ready"
 
 PROTOCOL_EXEC="$PROJECT_DIR/FortytwoProtocol"
-PROTOCOL_LOGS="$PROJECT_DEBUG_DIR/FortytwoProtocol.logs"
 PROTOCOL_DB_DIR="$PROJECT_DEBUG_DIR/internal_db"
 
 ACCOUNT_PRIVATE_KEY_FILE="$PROJECT_DIR/.account_private_key"
@@ -126,29 +125,28 @@ echo
 echo "Every AI node in the Fortytwo Network has unique strengths."
 echo "Choose how your node will contribute to the collective intelligence:"
 echo
-
 echo "╔═══════════════════════════════════════════════════════════════════════════╗"
 echo "║ 0. ⦿  AUTO-SELECT - Optimal Configuration                                 ║"
 echo "║    Let the system determine the best model for your hardware.             ║"
 echo "║    Balanced for performance and capabilities.                             ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-echo "║ 1. ◉  NEXUS - General Knowledge                                           ║"
+echo "║ 1. ◉  NOUMENAL PYLON - General Knowledge                                  ║"
 echo "║    Versatile multi-domain intelligence core with balanced capabilities.   ║"
 echo "║    Model: Llama-3.2-3B-Instruct (2.2GB VRAM)                              ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-echo "║ 2. ⬢  SENTINEL - Advanced Reasoning                                       ║"
+echo "║ 2. ⬢  TELEOLOGY PYLON - Advanced Reasoning                                ║"
 echo "║    High-precision logical analysis matrix optimized for problem-solving.  ║"
 echo "║    Model: INTELLECT-1-Instruct (6.5GB VRAM)                               ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-echo "║ 3. ⌬  ARCHITECT - Programming & Technical                                 ║"
+echo "║ 3. ⌬  MACHINIC PYLON - Programming & Technical                            ║"
 echo "║    Specialized system for code synthesis and framework construction.      ║"
 echo "║    Model: Qwen2.5-Coder-7B-Instruct (4.8GB VRAM)                          ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-echo "║ 4. ⎔  CORTEX - Academic Knowledge                                         ║"
+echo "║ 4. ⎔  SCHOLASTIC PYLON - Academic Knowledge                               ║"
 echo "║    Advanced data integration and research synthesis protocol.             ║"
 echo "║    Model: Ministral-8B-Instruct-2410 (5.2GB VRAM)                         ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-echo "║ 5. ⌖  CIPHER - Language & Writing                                         ║"
+echo "║ 5. ⌖  LOGOTOPOLOGY PYLON - Language & Writing                             ║"
 echo "║    Enhanced natural language and communication protocol interface.        ║"
 echo "║    Model: Qwen2.5-7B-Instruct (4.8GB VRAM)                                ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
@@ -166,27 +164,27 @@ case $NODE_CLASS in
     1)
         LLM_HF_REPO="bartowski/Llama-3.2-3B-Instruct-GGUF"
         LLM_HF_MODEL_NAME="Llama-3.2-3B-Instruct-Q4_K_M.gguf"
-        NODE_NAME="Nexus"
+        NODE_NAME="NOUMENAL PYLON"
         ;;
     2)
         LLM_HF_REPO="bartowski/INTELLECT-1-Instruct-GGUF"
         LLM_HF_MODEL_NAME="INTELLECT-1-Instruct-Q4_K_M.gguf"
-        NODE_NAME="Sentinel"
+        NODE_NAME="TELEOLOGY PYLON"
         ;;
     3)
         LLM_HF_REPO="Qwen/Qwen2.5-Coder-7B-Instruct-GGUF"
         LLM_HF_MODEL_NAME="qwen2.5-coder-7b-instruct-q4_k_m-00001-of-00002.gguf"
-        NODE_NAME="Architect"
+        NODE_NAME="MACHINIC PYLON"
         ;;
     4)
         LLM_HF_REPO="bartowski/Ministral-8B-Instruct-2410-GGUF"
         LLM_HF_MODEL_NAME="Ministral-8B-Instruct-2410-Q4_K_M.gguf"
-        NODE_NAME="Cortex"
+        NODE_NAME="SCHOLASTIC PYLON"
         ;;
     5)
         LLM_HF_REPO="Qwen/Qwen2.5-7B-Instruct-GGUF"
         LLM_HF_MODEL_NAME="qwen2.5-7b-instruct-q4_k_m-00001-of-00002.gguf"
-        NODE_NAME="Cipher"
+        NODE_NAME="LOGOTOPOLOGY PYLON"
         ;;
     6)
         echo
@@ -252,7 +250,11 @@ animate_text "Starting Protocol.."
 PROTOCOL_PID=$!
 
 cleanup() {
-    kill "$CAPSULE_PID" "$PROTOCOL_PID"
+    animate_text "Stopping capsule..."
+    kill "$CAPSULE_PID"
+    animate_text "Stopping protocol..."
+    kill "$PROTOCOL_PID"
+    animate_text "Processes stopped. Exiting."
     exit 0
 }
 
