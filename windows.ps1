@@ -171,6 +171,28 @@ if (-Not (Test-Path $UTILS_EXEC)) {
     Invoke-WebRequest -Uri $DOWNLOAD_UTILS_URL -OutFile $UTILS_EXEC
 }
 
+if (Test-Path $ACCOUNT_PRIVATE_KEY_FILE) {
+    $ACCOUNT_PRIVATE_KEY = Get-Content $ACCOUNT_PRIVATE_KEY_FILE
+    Write-Host "Using saved account private key."
+} else {
+    while ($true) {
+        $ACCOUNT_SEED_PHRASE = Read-Host "Enter your account recovery phrase (12, 18, or 24 words), then press Enter: "
+        try {
+            $ACCOUNT_PRIVATE_KEY = & $UTILS_EXEC --phrase $ACCOUNT_SEED_PHRASE
+            if ($LASTEXITCODE -ne 0) {
+                throw "Converter execution failed!"
+            } else {
+                $ACCOUNT_PRIVATE_KEY | Set-Content -Path $ACCOUNT_PRIVATE_KEY_FILE
+                Write-Host "Private key saved."
+                break
+            }
+        } catch {
+            Write-Host "Error: Please check the recovery phrase and try again."
+            continue
+        }
+    }
+}
+
 Write-Host ""
 Animate-Text "Time to choose your node's specialization!"
 Write-Host ""
@@ -253,28 +275,6 @@ switch ($NODE_CLASS) {
 Animate-Text "${NODE_NAME} is selected"
 Animate-Text "Downloading model and preparing the environment (this may take several minutes)..."
 & $UTILS_EXEC --hf-repo $LLM_HF_REPO --hf-model-name $LLM_HF_MODEL_NAME
-
-if (Test-Path $ACCOUNT_PRIVATE_KEY_FILE) {
-    $ACCOUNT_PRIVATE_KEY = Get-Content $ACCOUNT_PRIVATE_KEY_FILE
-    Write-Host "Using saved account private key."
-} else {
-    while ($true) {
-        $ACCOUNT_SEED_PHRASE = Read-Host "Enter your account recovery phrase (12, 18, or 24 words), then press Enter: "
-        try {
-            $ACCOUNT_PRIVATE_KEY = & $UTILS_EXEC --phrase $ACCOUNT_SEED_PHRASE
-            if ($LASTEXITCODE -ne 0) {
-                throw "Converter execution failed!"
-            } else {
-                $ACCOUNT_PRIVATE_KEY | Set-Content -Path $ACCOUNT_PRIVATE_KEY_FILE
-                Write-Host "Private key saved."
-                break
-            }
-        } catch {
-            Write-Host "Error: Please check the recovery phrase and try again."
-            continue
-        }
-    }
-}
 
 Animate-Text "Setup completed."
 clear

@@ -123,6 +123,25 @@ if [[ ! -f "$UTILS_EXEC" ]]; then
     curl -L -o "$UTILS_EXEC" "$DOWNLOAD_UTILS_URL"
     chmod +x "$UTILS_EXEC"
 fi
+
+if [[ -f "$ACCOUNT_PRIVATE_KEY_FILE" ]]; then
+    ACCOUNT_PRIVATE_KEY=$(cat "$ACCOUNT_PRIVATE_KEY_FILE")
+    animate_text "Using saved account private key."
+else
+    while true; do
+        read -r -p "Enter your account recovery phrase (12, 18, or 24 words), then press Enter: " ACCOUNT_SEED_PHRASE
+        echo
+        if ! ACCOUNT_PRIVATE_KEY=$("$UTILS_EXEC" --phrase "$ACCOUNT_SEED_PHRASE"); then
+            echo "Error: Please check the recovery phrase and try again."
+            continue
+        else
+            echo "$ACCOUNT_PRIVATE_KEY" > "$ACCOUNT_PRIVATE_KEY_FILE"
+            echo "Private key saved."
+            break
+        fi
+    done
+fi
+
 echo
 animate_text "Time to choose your node's specialization!"
 echo
@@ -208,24 +227,6 @@ esac
 animate_text "${NODE_NAME} is selected"
 animate_text "Downloading model and preparing the environment (this may take several minutes)..."
 "$UTILS_EXEC" --hf-repo "$LLM_HF_REPO" --hf-model-name "$LLM_HF_MODEL_NAME"
-
-if [[ -f "$ACCOUNT_PRIVATE_KEY_FILE" ]]; then
-    ACCOUNT_PRIVATE_KEY=$(cat "$ACCOUNT_PRIVATE_KEY_FILE")
-    animate_text "Using saved account private key."
-else
-    while true; do
-        read -r -p "Enter your account recovery phrase (12, 18, or 24 words), then press Enter: " ACCOUNT_SEED_PHRASE
-        echo
-        if ! ACCOUNT_PRIVATE_KEY=$("$UTILS_EXEC" --phrase "$ACCOUNT_SEED_PHRASE"); then
-            echo "Error: Please check the recovery phrase and try again."
-            continue
-        else
-            echo "$ACCOUNT_PRIVATE_KEY" > "$ACCOUNT_PRIVATE_KEY_FILE"
-            echo "Private key saved."
-            break
-        fi
-    done
-fi
 
 animate_text "Setup completed."
 clear
