@@ -152,18 +152,52 @@ if [[ -f "$ACCOUNT_PRIVATE_KEY_FILE" ]]; then
     ACCOUNT_PRIVATE_KEY=$(cat "$ACCOUNT_PRIVATE_KEY_FILE")
     animate_text "Using saved account private key."
 else
-    while true; do
-        read -r -p "Enter your account recovery phrase (12, 18, or 24 words), then press Enter: " ACCOUNT_SEED_PHRASE
-        echo
-        if ! ACCOUNT_PRIVATE_KEY=$("$UTILS_EXEC" --phrase "$ACCOUNT_SEED_PHRASE"); then
-            echo "Error: Please check the recovery phrase and try again."
-            continue
-        else
-            echo "$ACCOUNT_PRIVATE_KEY" > "$ACCOUNT_PRIVATE_KEY_FILE"
-            echo "Private key saved."
-            break
-        fi
-    done
+    echo
+    echo -e "╔════════════════════ NETWORK IDENTITY ═══════════════════╗"
+    echo -e "║                                                         ║"
+    echo -e "║  Every node requires a secure blockchain identity.      ║"
+    echo -e "║  Choose one of the following options:                   ║"
+    echo -e "║                                                         ║"
+    echo -e "║  1. Create a new identity with an invite code           ║"
+    echo -e "║     Recommended for new nodes                           ║"
+    echo -e "║                                                         ║"
+    echo -e "║  2. Recover an existing identity with recovery phrase   ║"
+    echo -e "║     Use this if you're restoring a previous node        ║"
+    echo -e "║                                                         ║"
+    echo -e "╚═════════════════════════════════════════════════════════╝"
+    echo
+    read -r -p "Select option [1-2]: " IDENTITY_OPTION
+    echo
+    IDENTITY_OPTION=${IDENTITY_OPTION:-1}
+    if [[ "$IDENTITY_OPTION" == "2" ]]; then
+        animate_text "Recovering existing identity"
+        while true; do
+            read -r -p "Enter your account recovery phrase (12, 18, or 24 words), then press Enter: " ACCOUNT_SEED_PHRASE
+            echo
+            if ! ACCOUNT_PRIVATE_KEY=$("$UTILS_EXEC" --phrase "$ACCOUNT_SEED_PHRASE"); then
+                echo "Error: Please check the recovery phrase and try again."
+                continue
+            else
+                echo "$ACCOUNT_PRIVATE_KEY" > "$ACCOUNT_PRIVATE_KEY_FILE"
+                echo "Private key saved."
+                break
+            fi
+        done
+    else
+        animate_text "You selected: Create a new identity with an invite code"
+        while true; do
+            read -r -p "Enter your invite code: " INVITE_CODE
+            if [[ -z "$INVITE_CODE" || ${#INVITE_CODE} -lt 12 ]]; then
+                echo -e "Invalid invite code. Please check and try again."
+                continue
+            fi
+        done
+        animate_text "Creating your node identity..."
+        "$UTILS_EXEC" --create-wallet "$ACCOUNT_PRIVATE_KEY_FILE" --drop-code "$INVITE_CODE"
+        ACCOUNT_PRIVATE_KEY=$(<"$ACCOUNT_PRIVATE_KEY_FILE")
+        animate_text "Identity configured and securely stored!"
+        read -n 1 -s -r -p "Press any key to continue..."
+    fi
 fi
 
 echo
@@ -171,6 +205,7 @@ animate_text "Time to choose your node's specialization!"
 echo
 echo "Every AI node in the Fortytwo Network has unique strengths."
 echo "Choose how your node will contribute to the collective intelligence:"
+auto_select_model
 echo
 echo "╔═══════════════════════════════════════════════════════════════════════════╗"
 echo "║ 0. ⦿  AUTO-SELECT - Optimal Configuration                                 ║"

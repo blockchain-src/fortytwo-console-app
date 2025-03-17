@@ -114,6 +114,9 @@ if (Test-Path $CAPSULE_EXEC) {
             $DOWNLOAD_CAPSULE_URL = "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/capsule/v$CAPSULE_VERSION/windows-amd64-cuda124.zip"
             Invoke-WebRequest -Uri $DOWNLOAD_CAPSULE_URL -OutFile $CAPSULE_ZIP
             Animate-Text "Extracting CUDA Capsule..."
+            Remove-Item $CAPSULE_EXEC -Force
+            Remove-Item "$PROJECT_DIR\cublas64_12.dll" -Force
+            Remove-Item "$PROJECT_DIR\cublasLt64_12.dll" -Force
             Expand-Archive -Path $CAPSULE_ZIP -DestinationPath $PROJECT_DIR -Force
             Remove-Item $CAPSULE_ZIP -Force
 
@@ -175,21 +178,59 @@ if (Test-Path $ACCOUNT_PRIVATE_KEY_FILE) {
     $ACCOUNT_PRIVATE_KEY = Get-Content $ACCOUNT_PRIVATE_KEY_FILE
     Write-Host "Using saved account private key."
 } else {
-    while ($true) {
-        $ACCOUNT_SEED_PHRASE = Read-Host "Enter your account recovery phrase (12, 18, or 24 words), then press Enter: "
-        try {
-            $ACCOUNT_PRIVATE_KEY = & $UTILS_EXEC --phrase $ACCOUNT_SEED_PHRASE
-            if ($LASTEXITCODE -ne 0) {
-                throw "Converter execution failed!"
+    Write-Host ""
+    Write-Host "|==================== NETWORK IDENTITY ===================|"
+    Write-Host "|                                                         |"
+    Write-Host "|  Every node requires a secure blockchain identity.      |"
+    Write-Host "|  Choose one of the following options:                   |"
+    Write-Host "|                                                         |"
+    Write-Host "|  1. Create a new identity with an invite code           |"
+    Write-Host "|     Recommended for new nodes                           |"
+    Write-Host "|                                                         |"
+    Write-Host "|  2. Recover an existing identity with recovery phrase   |"
+    Write-Host "|     Use this if you're restoring a previous node        |"
+    Write-Host "|                                                         |"
+    Write-Host "|=========================================================|"
+    Write-Host ""
+
+    $IDENTITY_OPTION = Read-Host "Select option [1-2]"
+    if (-not $IDENTITY_OPTION) { $IDENTITY_OPTION = "1" }
+
+    if ($IDENTITY_OPTION -eq "2") {
+        Write-Host "Recovering existing identity..."
+        while ($true) {
+            $ACCOUNT_SEED_PHRASE = Read-Host "Enter your account recovery phrase (12, 18, or 24 words), then press Enter: "
+            try {
+                $ACCOUNT_PRIVATE_KEY = & $UTILS_EXEC --phrase $ACCOUNT_SEED_PHRASE
+                if ($LASTEXITCODE -ne 0) {
+                    throw "Converter execution failed!"
+                } else {
+                    $ACCOUNT_PRIVATE_KEY | Set-Content -Path $ACCOUNT_PRIVATE_KEY_FILE
+                    Write-Host "Private key saved."
+                    break
+                }
+            } catch {
+                Write-Host "Error: Please check the recovery phrase and try again."
+                continue
+            }
+        }
+    } else {
+        Write-Host "You selected: Create a new identity with an invite code"
+        while ($true) {
+            $INVITE_CODE = Read-Host "Enter your invite code"
+            if (-not $INVITE_CODE -or $INVITE_CODE.Length -lt 12) {
+                Write-Host "Invalid invite code. Please check and try again."
+                continue
             } else {
-                $ACCOUNT_PRIVATE_KEY | Set-Content -Path $ACCOUNT_PRIVATE_KEY_FILE
-                Write-Host "Private key saved."
                 break
             }
-        } catch {
-            Write-Host "Error: Please check the recovery phrase and try again."
-            continue
         }
+        Write-Host "Creating your node identity..."
+        & $UTILS_EXEC --create-wallet $ACCOUNT_PRIVATE_KEY_FILE --drop-code $INVITE_CODE
+        $ACCOUNT_PRIVATE_KEY = Get-Content $ACCOUNT_PRIVATE_KEY_FILE
+        Write-Host "Identity configured and securely stored!"
+        Write-Host "Press any key to continue..."
+        $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     }
 }
 
@@ -198,6 +239,7 @@ Animate-Text "Time to choose your node's specialization!"
 Write-Host ""
 Write-Host "Every AI node in the Fortytwo Network has unique strengths."
 Write-Host "Choose how your node will contribute to the collective intelligence:"
+Auto-Select-Model
 Write-Host ""
 Write-Host "|===========================================================================|"
 Write-Host "| 0. AUTO-SELECT - Optimal Configuration                                    |"
