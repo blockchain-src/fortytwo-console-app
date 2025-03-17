@@ -230,7 +230,7 @@ if (Test-Path $ACCOUNT_PRIVATE_KEY_FILE) {
         $ACCOUNT_PRIVATE_KEY = Get-Content $ACCOUNT_PRIVATE_KEY_FILE
         Write-Host "Identity configured and securely stored!"
         Write-Host "Press any key to continue..."
-        $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        [System.Console]::ReadKey($true)
     }
 }
 
