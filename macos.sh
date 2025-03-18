@@ -12,16 +12,21 @@ animate_text() {
 auto_select_model() {
     AVAILABLE_MEM=$(( $(sysctl -n hw.memsize) / 1024 / 1024 / 1024 ))
     animate_text "System analysis: ${AVAILABLE_MEM}GB RAM detected"
-    if [ $AVAILABLE_MEM -ge 16 ]; then
-        animate_text "Recommended: SENTINEL for high-performance systems"
-        LLM_HF_REPO="bartowski/INTELLECT-1-Instruct-GGUF"
-        LLM_HF_MODEL_NAME="INTELLECT-1-Instruct-Q4_K_M.gguf"
-        NODE_NAME="Sentinel"
+    if [ $AVAILABLE_MEM -ge 22 ]; then
+        animate_text "Recommended: SAPIENCE PYLON for problem solving & logical reasoning"
+        LLM_HF_REPO="Qwen/QwQ-32B-GGUF"
+        LLM_HF_MODEL_NAME="qwq-32b-q4_k_m.gguf"
+        NODE_NAME="SAPIENCE PYLON"
+    elif [ $AVAILABLE_MEM -ge 16 ]; then
+        animate_text "Recommended: NUMERICON PYLON for mathematical intelligence"
+        LLM_HF_REPO="unsloth/phi-4-GGUF"
+        LLM_HF_MODEL_NAME="phi-4-Q4_K_M.gguf"
+        NODE_NAME="NUMERICON PYLON"
     elif [ $AVAILABLE_MEM -ge 8 ]; then
         animate_text "Recommended: NEXUS for balanced capability"
         LLM_HF_REPO="bartowski/Llama-3.2-3B-Instruct-GGUF"
         LLM_HF_MODEL_NAME="Llama-3.2-3B-Instruct-Q4_K_M.gguf"
-        NODE_NAME="Nexus"
+        NODE_NAME="NOUMENAL PYLON"
     else
         animate_text "Recommended: NEXUS optimized for efficiency"
         LLM_HF_REPO="Qwen/Qwen2.5-1.5B-Instruct-GGUF"
@@ -208,11 +213,31 @@ echo "║ 5. ⌖  LOGOTOPOLOGY PYLON - Language & Writing                       
 echo "║    Enhanced natural language and communication protocol interface.        ║"
 echo "║    Model: Qwen2.5-7B-Instruct (4.8GB VRAM)                                ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-echo "║ 6. ⎋  CUSTOM - Advanced Configuration                                     ║"
+echo "║ 6. ⏃  SAPIENCE PYLON - Problem Solving & Logical Reasoning               ║"
+echo "║    High-level reasoning, mathematical problem-solving                     ║"
+echo "║         and competitive coding.                                           ║"
+echo "║    Model: QwQ-32B (21GB VRAM)                                             ║"
+echo "╠═══════════════════════════════════════════════════════════════════════════╣"
+echo "║ 7. ✶   NUMERICON PYLON - Mathematical Intelligence                        ║"
+echo "║    Optimized for symbolic reasoning, step-by-step math solutions          ║"
+echo "║         and logic-based inference.                                        ║"
+echo "║    Model: Phi-4-14B (9.1GB VRAM)                                          ║"
+echo "╠═══════════════════════════════════════════════════════════════════════════╣"
+echo "║ 8. ⬡   POLYGLOSSIA PYLON - Multilingual Understanding                     ║"
+echo "║    Balanced intelligence with high-quality cross-lingual comprehension,   ║"
+echo "║         translation and multilingual reasoning.                           ║"
+echo "║    Model: Gemma-3 4B (3.3GB VRAM)                                         ║"
+echo "╠═══════════════════════════════════════════════════════════════════════════╣"
+echo "║ 9. ⨳  OLYMPIAD PYLON - Competitive Programming & Algorithms               ║"
+echo "║    Optimized for competitive coding, excelling in algorithmic challenges  ║"
+echo "║          and CodeForces-style programming tasks.                          ║"
+echo "║    Model: OlympicCoder 7B (4.8GB VRAM )                                   ║"
+echo "╠═══════════════════════════════════════════════════════════════════════════╣"
+echo "║ 10. ⎋  CUSTOM - Advanced Configuration                                    ║"
 echo "╚═══════════════════════════════════════════════════════════════════════════╝"
 echo
 
-read -r -p "Select your node's specialization [0-6] (0 for auto-select): " NODE_CLASS
+read -r -p "Select your node's specialization [0-10] (0 for auto-select): " NODE_CLASS
 
 case $NODE_CLASS in
     0)
@@ -245,6 +270,26 @@ case $NODE_CLASS in
         NODE_NAME="LOGOTOPOLOGY PYLON"
         ;;
     6)
+        LLM_HF_REPO="Qwen/QwQ-32B-GGUF"
+        LLM_HF_MODEL_NAME="qwq-32b-q4_k_m.gguf"
+        NODE_NAME="SAPIENCE PYLON"
+        ;;
+    7)
+        LLM_HF_REPO="unsloth/phi-4-GGUF"
+        LLM_HF_MODEL_NAME="phi-4-Q4_K_M.gguf"
+        NODE_NAME="NUMERICON PYLON"
+        ;;
+    8)
+        LLM_HF_REPO="unsloth/gemma-3-12b-it-GGUF"
+        LLM_HF_MODEL_NAME="gemma-3-12b-it-Q4_K_M.gguf"
+        NODE_NAME="POLYGLOSSIA PYLON"
+        ;;
+    9)
+        LLM_HF_REPO="bartowski/open-r1_OlympicCoder-7B-GGUF"
+        LLM_HF_MODEL_NAME="open-r1_OlympicCoder-7B-Q4_K_M.gguf"
+        NODE_NAME="OLYMPIAD PYLON"
+        ;;
+    10)
         echo
         echo "═════════════════════ ADVANCED SETUP ═════════════════════"
         echo "This option is for users familiar with language models"
