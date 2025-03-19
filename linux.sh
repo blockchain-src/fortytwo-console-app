@@ -64,6 +64,7 @@ animate_text "Welcome to the FortytwoNode Network - Join the Decentralized AI Re
 echo
 PROJECT_DIR="./FortytwoNode"
 PROJECT_DEBUG_DIR="$PROJECT_DIR/debug"
+PROJECT_MODEL_CACHE_DIR="$PROJECT_DIR/model_cache"
 
 CAPSULE_EXEC="$PROJECT_DIR/FortytwoCapsule"
 CAPSULE_LOGS="$PROJECT_DEBUG_DIR/FortytwoCapsule.logs"
@@ -71,15 +72,15 @@ CAPSULE_READY_URL="http://0.0.0.0:42442/ready"
 
 PROTOCOL_EXEC="$PROJECT_DIR/FortytwoProtocol"
 PROTOCOL_DB_DIR="$PROJECT_DEBUG_DIR/internal_db"
+
 ACCOUNT_PRIVATE_KEY_FILE="$PROJECT_DIR/.account_private_key"
 
-DOWNLOAD_UTILS_URL="https://fortytwo-network-public.s3.us-east-2.amazonaws.com/utilities/FortytwoUtilsLinux"
 UTILS_EXEC="$PROJECT_DIR/FortytwoUtils"
 
 animate_text "Preparing your node environment..."
 
-if [[ ! -d "$PROJECT_DEBUG_DIR" ]]; then
-    mkdir -p "$PROJECT_DEBUG_DIR"
+if [[ ! -d "$PROJECT_DEBUG_DIR" || ! -d "$PROJECT_MODEL_CACHE_DIR" ]]; then
+    mkdir -p "$PROJECT_DEBUG_DIR" "$PROJECT_MODEL_CACHE_DIR"
     animate_text "Project directory created: $PROJECT_DIR"
 else
     animate_text "Project directory already exists: $PROJECT_DIR"
@@ -100,6 +101,10 @@ DOWNLOAD_PROTOCOL_URL="https://fortytwo-network-public.s3.us-east-2.amazonaws.co
 CAPSULE_VERSION=$(curl -s "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/capsule/latest")
 animate_text "Latest capsule version is $CAPSULE_VERSION"
 DOWNLOAD_CAPSULE_URL="https://fortytwo-network-public.s3.us-east-2.amazonaws.com/capsule/v$CAPSULE_VERSION/FortytwoCapsule-linux-amd64"
+
+UTILS_VERSION=$(curl -s "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/utilities/latest")
+animate_text "Latest utils version is $UTILS_VERSION"
+DOWNLOAD_UTILS_URL="https://fortytwo-network-public.s3.us-east-2.amazonaws.com/utilities/v$UTILS_VERSION/FortytwoUtilsLinux"
 
 animate_text "Downloading and configuring core components..."
 
@@ -149,6 +154,15 @@ else
     animate_text "Node downloaded to: $PROTOCOL_EXEC"
 fi
 if [[ ! -f "$UTILS_EXEC" ]]; then
+    CURRENT_UTILS_VERSION_OUTPUT=$("$UTILS_EXEC" --version 2>/dev/null)
+    if [[ "CURRENT_UTILS_VERSION_OUTPUT" == *"UTILS_VERSION"* ]]; then
+        animate_text "Utils is already up to date (version found: $CURRENT_UTILS_VERSION_OUTPUT). Skipping download."
+    else
+        animate_text "Utils is outdated (found version: $CURRENT_UTILS_VERSION_OUTPUT, expected: $UTILS_VERSION). Downloading new version..."
+        curl -L -o "$UTILS_EXEC" "$DOWNLOAD_UTILS_URL"
+        chmod +x "$UTILS_EXEC"
+    fi
+else
     curl -L -o "$UTILS_EXEC" "$DOWNLOAD_UTILS_URL"
     chmod +x "$UTILS_EXEC"
 fi
@@ -328,14 +342,14 @@ case $NODE_CLASS in
 esac
 animate_text "${NODE_NAME} is selected"
 animate_text "Downloading model and preparing the environment (this may take several minutes)..."
-"$UTILS_EXEC" --hf-repo "$LLM_HF_REPO" --hf-model-name "$LLM_HF_MODEL_NAME"
+"$UTILS_EXEC" --hf-repo "$LLM_HF_REPO" --hf-model-name "$LLM_HF_MODEL_NAME" --model-cache "$PROJECT_MODEL_CACHE_DIR"
 
 
 animate_text "Setup completed."
 clear
 echo "$BANNER"
 animate_text "Starting Capsule.."
-"$CAPSULE_EXEC" --llm-hf-repo "$LLM_HF_REPO" --llm-hf-model-name "$LLM_HF_MODEL_NAME" > "$CAPSULE_LOGS" 2>&1 &
+"$CAPSULE_EXEC" --llm-hf-repo "$LLM_HF_REPO" --llm-hf-model-name "$LLM_HF_MODEL_NAME" --model-cache "$PROJECT_MODEL_CACHE_DIR" > "$CAPSULE_LOGS" 2>&1 &
 CAPSULE_PID=$!
 
 animate_text "Be patient during the first launch of the capsule; it will take some time."

@@ -53,6 +53,7 @@ Write-Host ($BANNER -join '')
 
 $PROJECT_DIR = "FortytwoNode"
 $PROJECT_DEBUG_DIR = "$PROJECT_DIR\debug"
+$PROJECT_MODEL_CACHE_DIR="$PROJECT_DIR\model_cache"
 $CAPSULE_ZIP = "$PROJECT_DIR\capsule_cuda.zip"
 $EXTRACTED_CUDA_EXEC = "$PROJECT_DIR\FortytwoCapsule-windows-amd64-cuda124.exe"
 $CAPSULE_EXEC = "$PROJECT_DIR\FortytwoCapsule.exe"
@@ -65,11 +66,11 @@ $PROTOCOL_DB_DIR = "$PROJECT_DEBUG_DIR\internal_db"
 
 $ACCOUNT_PRIVATE_KEY_FILE = "$PROJECT_DIR\.account_private_key"
 
-$DOWNLOAD_UTILS_URL="https://fortytwo-network-public.s3.us-east-2.amazonaws.com/utilities/FortytwoUtilsWindows.exe"
 $UTILS_EXEC="$PROJECT_DIR\FortytwoUtilsWindows.exe"
 
-if (-Not (Test-Path $PROJECT_DEBUG_DIR)) {
-    New-Item -ItemType Directory -Path $PROJECT_DEBUG_DIR | Out-Null
+if (-Not (Test-Path $PROJECT_DEBUG_DIR) -or -Not (Test-Path $PROJECT_MODEL_CACHE_DIR)) {
+    New-Item -ItemType Directory -Path $PROJECT_DEBUG_DIR -Force | Out-Null
+    New-Item -ItemType Directory -Path $PROJECT_MODEL_CACHE_DIR -Force | Out-Null
     Animate-Text "Project directory created: $PROJECT_DIR"
 } else {
     Animate-Text "Project directory already exists: $PROJECT_DIR"
@@ -106,6 +107,10 @@ $DOWNLOAD_PROTOCOL_URL = "https://fortytwo-network-public.s3.us-east-2.amazonaws
 
 $CAPSULE_VERSION = (Invoke-RestMethod "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/capsule/latest").Trim()
 Animate-Text "Latest capsule version is $CAPSULE_VERSION"
+
+$UTILS_VERSION = (Invoke-RestMethod "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/utilities/latest").Trim()
+Animate-Text "Latest utils version is $UTILS_VERSION"
+$DOWNLOAD_UTILS_URL = "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/utilities/v$UTILS_VERSION/FortytwoUtilsWindows.exe"
 
 
 if (Test-Path $CAPSULE_EXEC) {
@@ -174,7 +179,15 @@ if (Test-Path $PROTOCOL_EXEC) {
     Animate-Text "Downloading Node..."
     Invoke-WebRequest -Uri $DOWNLOAD_PROTOCOL_URL -OutFile $PROTOCOL_EXEC
 }
-if (-Not (Test-Path $UTILS_EXEC)) {
+
+if (Test-Path $UTILS_EXEC) {
+    $CURRENT_UTILS_VERSION_OUTPUT = & $UTILS_EXEC --version 2>$null
+    if ($CURRENT_UTILS_VERSION_OUTPUT -match $UTILS_VERSION) {
+        Animate-Text "Utils is already up to date ($CURRENT_UTILS_VERSION_OUTPUT). Skipping download."
+    } else {
+        Invoke-WebRequest -Uri $DOWNLOAD_UTILS_URL -OutFile $UTILS_EXEC
+    }
+} else {
     Invoke-WebRequest -Uri $DOWNLOAD_UTILS_URL -OutFile $UTILS_EXEC
 }
 
@@ -357,14 +370,14 @@ switch ($NODE_CLASS) {
 }
 Animate-Text "${NODE_NAME} is selected"
 Animate-Text "Downloading model and preparing the environment (this may take several minutes)..."
-& $UTILS_EXEC --hf-repo $LLM_HF_REPO --hf-model-name $LLM_HF_MODEL_NAME
+& $UTILS_EXEC --hf-repo $LLM_HF_REPO --hf-model-name $LLM_HF_MODEL_NAME --model-cache $PROJECT_MODEL_CACHE_DIR
 
 Animate-Text "Setup completed."
 clear
 Write-Host ($BANNER -join '')
 Animate-Text "Starting Capsule.."
 
-$CAPSULE_PROC = Start-Process -FilePath $CAPSULE_EXEC -ArgumentList "--llm-hf-repo $LLM_HF_REPO --llm-hf-model-name $LLM_HF_MODEL_NAME" -PassThru -RedirectStandardOutput $CAPSULE_LOGS -RedirectStandardError $CAPSULE_ERR_LOGS -NoNewWindow
+$CAPSULE_PROC = Start-Process -FilePath $CAPSULE_EXEC -ArgumentList "--llm-hf-repo $LLM_HF_REPO --llm-hf-model-name $LLM_HF_MODEL_NAME --model-cache $PROJECT_MODEL_CACHE_DIR" -PassThru -RedirectStandardOutput $CAPSULE_LOGS -RedirectStandardError $CAPSULE_ERR_LOGS -NoNewWindow
 Animate-Text "Be patient during the first launch of the capsule; it will take some time."
 while ($true) {
     try {
