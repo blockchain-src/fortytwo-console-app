@@ -34,7 +34,7 @@ auto_select_model() {
         animate_text "Recommended: NEXUS for balanced capability"
         LLM_HF_REPO="bartowski/Llama-3.2-3B-Instruct-GGUF"
         LLM_HF_MODEL_NAME="Llama-3.2-3B-Instruct-Q4_K_M.gguf"
-        NODE_NAME="Nexus"
+        NODE_NAME="NOUMENAL PYLON"
     else
         animate_text "Recommended: NEXUS optimized for efficiency"
         LLM_HF_REPO="Qwen/Qwen2.5-1.5B-Instruct-GGUF"
