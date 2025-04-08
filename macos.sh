@@ -182,9 +182,10 @@ else
         while true; do
             read -r -p "Enter your invite code: " INVITE_CODE
             if [[ -z "$INVITE_CODE" || ${#INVITE_CODE} -lt 12 ]]; then
-                echo -e "Invalid invite code. Please check and try again."
+                echo "Invalid invite code. Please check and try again."
                 continue
             fi
+            break
         done
         animate_text "Creating your node identity..."
         "$UTILS_EXEC" --create-wallet "$ACCOUNT_PRIVATE_KEY_FILE" --drop-code "$INVITE_CODE"
