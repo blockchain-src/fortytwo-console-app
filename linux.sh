@@ -153,7 +153,7 @@ else
     chmod +x "$PROTOCOL_EXEC"
     animate_text "Node downloaded to: $PROTOCOL_EXEC"
 fi
-if [[ ! -f "$UTILS_EXEC" ]]; then
+if [[ -f "$UTILS_EXEC" ]]; then
     CURRENT_UTILS_VERSION_OUTPUT=$("$UTILS_EXEC" --version 2>/dev/null)
     if [[ "CURRENT_UTILS_VERSION_OUTPUT" == *"UTILS_VERSION"* ]]; then
         animate_text "Utils is already up to date (version found: $CURRENT_UTILS_VERSION_OUTPUT). Skipping download."
