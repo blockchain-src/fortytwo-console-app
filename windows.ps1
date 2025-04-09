@@ -380,6 +380,20 @@ Animate-Text "Starting Capsule.."
 $CAPSULE_PROC = Start-Process -FilePath $CAPSULE_EXEC -ArgumentList "--llm-hf-repo $LLM_HF_REPO --llm-hf-model-name $LLM_HF_MODEL_NAME --model-cache $PROJECT_MODEL_CACHE_DIR" -PassThru -RedirectStandardOutput $CAPSULE_LOGS -RedirectStandardError $CAPSULE_ERR_LOGS -NoNewWindow
 Animate-Text "Be patient during the first launch of the capsule; it will take some time."
 while ($true) {
+    if ($CAPSULE_PROC.HasExited) {
+        Write-Host "Capsule process exited (exit code: $($CAPSULE_PROC.ExitCode))" -ForegroundColor Red
+        try {
+            Get-Content $CAPSULE_LOGS -Tail 1
+        } catch {
+            # pass
+        }
+        try {
+            Get-Content $CAPSULE_ERR_LOGS -Tail 1
+        } catch {
+           # pass
+        }
+        exit 1
+    }
     try {
         $STATUS_CODE = (Invoke-WebRequest -Uri $CAPSULE_READY_URL -UseBasicParsing -ErrorAction Stop).StatusCode
         if ($STATUS_CODE -eq 200) {

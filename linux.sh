@@ -251,7 +251,7 @@ echo "║ 5. ⌖  LOGOTOPOLOGY PYLON - Language & Writing                       
 echo "║    Enhanced natural language and communication protocol interface.        ║"
 echo "║    Model: Qwen2.5-7B-Instruct (4.8GB VRAM)                                ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-echo "║ 6. ⏃  SAPIENCE PYLON - Problem Solving & Logical Reasoning               ║"
+echo "║ 6. ⏃  SAPIENCE PYLON - Problem Solving & Logical Reasoning                ║"
 echo "║    High-level reasoning, mathematical problem-solving                     ║"
 echo "║         and competitive coding.                                           ║"
 echo "║    Model: QwQ-32B (21GB VRAM)                                             ║"
@@ -362,6 +362,13 @@ while true; do
     else
         # Capsule is not ready. Retrying in 5 seconds...
         sleep 5
+    fi
+    if ! kill -0 "$CAPSULE_PID" 2>/dev/null; then
+        echo -e "\033[0;31mCapsule process exited (PID: $CAPSULE_PID)\033[0m"
+        if [[ -f "$CAPSULE_LOGS" ]]; then
+            tail -n 1 "$CAPSULE_LOGS"
+    fi
+        exit 1
     fi
 done
 animate_text "Starting Protocol.."
