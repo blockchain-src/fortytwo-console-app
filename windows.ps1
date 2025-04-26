@@ -77,6 +77,13 @@ if (-Not (Test-Path $PROJECT_DEBUG_DIR) -or -Not (Test-Path $PROJECT_MODEL_CACHE
 }
 
 function Cleanup {
+    if ($CAPSULE_PROC) {
+        $CAPSULE_PROC.Refresh()
+    }
+    if ($PROTOCOL_PROC) {
+        $PROTOCOL_PROC.Refresh()
+    }
+
     if ($CAPSULE_PROC -and $CAPSULE_PROC.HasExited -eq $false) {
         Animate-Text "Stopping Capsule..."
         Stop-Process -Id $CAPSULE_PROC.Id -Force -ErrorAction SilentlyContinue
@@ -446,6 +453,8 @@ function Node-Startup {
 Node-Startup
 while ($true) {
     $IsAlive = $true
+    $CAPSULE_PROC.Refresh()
+    $PROTOCOL_PROC.Refresh()
 
     # Check if Capsule process is running
     if ($CAPSULE_PROC.HasExited) {
