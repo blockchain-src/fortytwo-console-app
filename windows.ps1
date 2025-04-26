@@ -106,7 +106,7 @@ Write-Output "Checking for setup script updates..."
 try {
     Invoke-WebRequest -Uri $UpdateUrl -OutFile $TempFile -ErrorAction Stop
 } catch {
-    Write-Output "Failed to download setup script update."
+    Write-Output "Failed to download setup script update. Check your internet connection and try again."
     exit 1
 }
 
@@ -405,39 +405,42 @@ Animate-Text "Downloading model and preparing the environment (this may take sev
 Animate-Text "Setup completed."
 clear
 Write-Host ($BANNER -join '')
-Animate-Text "Starting Capsule.."
 
-$CAPSULE_PROC = Start-Process -FilePath $CAPSULE_EXEC -ArgumentList "--llm-hf-repo $LLM_HF_REPO --llm-hf-model-name $LLM_HF_MODEL_NAME --model-cache $PROJECT_MODEL_CACHE_DIR" -PassThru -RedirectStandardOutput $CAPSULE_LOGS -RedirectStandardError $CAPSULE_ERR_LOGS -NoNewWindow
-Animate-Text "Be patient during the first launch of the capsule; it will take some time."
-while ($true) {
-    if ($CAPSULE_PROC.HasExited) {
-        Write-Host "Capsule process exited (exit code: $($CAPSULE_PROC.ExitCode))" -ForegroundColor Red
-        try {
-            Get-Content $CAPSULE_LOGS -Tail 1
-        } catch {
+function Node-Startup {
+    Animate-Text "Starting Capsule.."
+
+    $CAPSULE_PROC = Start-Process -FilePath $CAPSULE_EXEC -ArgumentList "--llm-hf-repo $LLM_HF_REPO --llm-hf-model-name $LLM_HF_MODEL_NAME --model-cache $PROJECT_MODEL_CACHE_DIR" -PassThru -RedirectStandardOutput $CAPSULE_LOGS -RedirectStandardError $CAPSULE_ERR_LOGS -NoNewWindow
+    Animate-Text "Be patient during the first launch of the capsule; it will take some time."
+    while ($true) {
+        if ($CAPSULE_PROC.HasExited) {
+            Write-Host "Capsule process exited (exit code: $($CAPSULE_PROC.ExitCode))" -ForegroundColor Red
+            try {
+                Get-Content $CAPSULE_LOGS -Tail 1
+            } catch {
+                # pass
+            }
+            try {
+                Get-Content $CAPSULE_ERR_LOGS -Tail 1
+            } catch {
             # pass
+            }
+            exit 1
         }
         try {
-            Get-Content $CAPSULE_ERR_LOGS -Tail 1
+            $STATUS_CODE = (Invoke-WebRequest -Uri $CAPSULE_READY_URL -UseBasicParsing -ErrorAction Stop).StatusCode
+            if ($STATUS_CODE -eq 200) {
+                Write-Host "Capsule is ready!"
+                break
+            }
         } catch {
-           # pass
+            # Just Ignore Error
         }
-        exit 1
-    }
-    try {
-        $STATUS_CODE = (Invoke-WebRequest -Uri $CAPSULE_READY_URL -UseBasicParsing -ErrorAction Stop).StatusCode
-        if ($STATUS_CODE -eq 200) {
-            Write-Host "Capsule is ready!"
-            break
-        }
-    } catch {
-        # Just Ignore Error
-    }
 
-    Start-Sleep -Seconds 5
+        Start-Sleep -Seconds 5
+    }
+    Animate-Text "Starting Protocol.."
+    $PROTOCOL_PROC = Start-Process -FilePath $PROTOCOL_EXEC -ArgumentList "--account-private-key $ACCOUNT_PRIVATE_KEY --db-folder $PROTOCOL_DB_DIR" -PassThru -NoNewWindow
 }
-Animate-Text "Starting Protocol.."
-$PROTOCOL_PROC = Start-Process -FilePath $PROTOCOL_EXEC -ArgumentList "--account-private-key $ACCOUNT_PRIVATE_KEY --db-folder $PROTOCOL_DB_DIR" -PassThru -NoNewWindow
 
 while ($true) {
     if ($CAPSULE_PROC.HasExited) {
@@ -450,5 +453,42 @@ while ($true) {
         Cleanup
         Exit 1
     }
+    Start-Sleep -Seconds 5
+}
+
+while ($true) {
+    $IsAlive = $true
+
+    # Check if Capsule process is running
+    if ($CAPSULE_PROC.HasExited) {
+        Write-Output "Capsule has stopped. Restarting..."
+        $IsAlive = $false
+    }
+
+    # Check if Protocol process is running
+    if ($PROTOCOL_PROC.HasExited) {
+        Write-Output "Node has stopped. Restarting..."
+        $IsAlive = $false
+    }
+
+    # Restart logic
+    if (-not $IsAlive) {
+        Write-Output "Capsule or Protocol process has stopped. Restarting..."
+
+        # Kill processes if they exist
+        if ($CAPSULE_PROC -and $CAPSULE_PROC.HasExited -eq $false) {
+            Write-Output "Stopping Capsule before restart..."
+            Stop-Process -Id $CAPSULE_PROC.Id -Force -ErrorAction SilentlyContinue
+        }
+    
+        if ($PROTOCOL_PROC -and $PROTOCOL_PROC.HasExited -eq $false) {
+            Write-Output "Stopping Node before restart..."
+            Stop-Process -Id $PROTOCOL_PROC.Id -Force -ErrorAction SilentlyContinue
+        }
+    
+        # Call startup function (you need to define this)
+        Node-Startup
+    }
+
     Start-Sleep -Seconds 5
 }
