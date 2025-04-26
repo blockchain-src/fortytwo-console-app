@@ -442,20 +442,7 @@ function Node-Startup {
     $PROTOCOL_PROC = Start-Process -FilePath $PROTOCOL_EXEC -ArgumentList "--account-private-key $ACCOUNT_PRIVATE_KEY --db-folder $PROTOCOL_DB_DIR" -PassThru -NoNewWindow
 }
 
-while ($true) {
-    if ($CAPSULE_PROC.HasExited) {
-        Animate-Text "Capsule has stopped. Exiting..."
-        Cleanup
-        Exit 1
-    }
-    if ($PROTOCOL_PROC.HasExited) {
-        Animate-Text "Node has stopped. Exiting..."
-        Cleanup
-        Exit 1
-    }
-    Start-Sleep -Seconds 5
-}
-
+Node-Startup
 while ($true) {
     $IsAlive = $true
 
