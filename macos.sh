@@ -4,7 +4,7 @@ animate_text() {
     local text="$1"
     for ((i=0; i<${#text}; i++)); do
         echo -n "${text:$i:1}"
-        sleep 0.01
+        sleep 0.0075
     done
     echo
 }
@@ -81,6 +81,39 @@ if ! command -v curl &> /dev/null; then
     echo "curl is not installed. Please install curl using 'brew install curl' and re-run the script."
     exit 1
 fi
+
+# --- Update Logic ---
+animate_text "Checking for installer updates..."
+INSTALLER_UPDATE_URL="https://raw.githubusercontent.com/Fortytwo-Network/fortytwo-console-app/main/macos.sh"
+SCRIPT_PATH="$0"
+TEMP_FILE=$(mktemp)
+
+echo "Checking for setup script update..."
+curl -fsSL -o "$TEMP_FILE" "$INSTALLER_UPDATE_URL"
+
+# Check download
+if [ ! -s "$TEMP_FILE" ]; then
+    echo "Failed to download setup script update. Check your internet connection and try again."
+    exit 1
+fi
+
+# Compare
+if cmp -s "$SCRIPT_PATH" "$TEMP_FILE"; then
+    # No update needed
+    echo "Setup script is already up to date."
+    rm "$TEMP_FILE"
+else
+    echo "Found new setup script version. Updating..."
+    cp "$SCRIPT_PATH" "${SCRIPT_PATH}.bak"
+    cp "$TEMP_FILE" "$SCRIPT_PATH"
+    chmod +x "$SCRIPT_PATH"
+    rm "$TEMP_FILE"
+    echo "Restarting script..."
+    exec "$SCRIPT_PATH" "$@"
+    echo "Error: exec failed"
+    exit 1
+fi
+# --- End Update Logic ---
 
 animate_text "Checking for the latest software versions..."
 

@@ -5,7 +5,7 @@ function Animate-Text {
 
     foreach ($char in $text.ToCharArray()) {
         Write-Host -NoNewline $char
-        Start-Sleep -Milliseconds 10
+        Start-Sleep -Milliseconds 7
     }
     Write-Host ""
 }
@@ -95,11 +95,41 @@ function Cleanup {
     exit 0
 }
 
+# --- Update setup script ---
+$UpdateUrl = "https://raw.githubusercontent.com/Fortytwo-Network/fortytwo-console-app/main/windows.ps1"
+$ScriptPath = $MyInvocation.MyCommand.Path
+$TempFile = [System.IO.Path]::GetTempFileName()
+
+Write-Output "Checking for setup script updates..."
+
+# Download updated script
+try {
+    Invoke-WebRequest -Uri $UpdateUrl -OutFile $TempFile -ErrorAction Stop
+} catch {
+    Write-Output "Failed to download setup script update."
+    exit 1
+}
+
+# Compare
+if ((Get-FileHash $ScriptPath).Hash -eq (Get-FileHash $TempFile).Hash) {
+    Write-Output "Setup script is already up to date."
+    Remove-Item $TempFile
+} else {
+    Write-Output "Found new setup script version. Updating..."
+    Copy-Item $ScriptPath "$ScriptPath.bak" -Force
+    Copy-Item $TempFile $ScriptPath -Force
+    Remove-Item $TempFile
+
+    Write-Output "Restarting script..."
+    # Start the new version and exit current
+    Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File `"$ScriptPath`""
+    exit
+}
+
 trap {
     Animate-Text "`nDetected Ctrl+C. Stopping processes..."
     Cleanup
 }
-
 
 $PROTOCOL_VERSION = (Invoke-RestMethod "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/protocol/latest").Trim()
 Animate-Text "Latest protocol version is $PROTOCOL_VERSION"
