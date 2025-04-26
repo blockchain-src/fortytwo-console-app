@@ -457,13 +457,13 @@ while ($true) {
     $PROTOCOL_PROC.Refresh()
 
     # Check if Capsule process is running
-    if ($CAPSULE_PROC.HasExited) {
+    if (-not (Get-Process -Id $CAPSULE_PROC.Id -ErrorAction SilentlyContinue)) {
         Write-Output "Capsule has stopped. Restarting..."
         $IsAlive = $false
     }
 
     # Check if Protocol process is running
-    if ($PROTOCOL_PROC.HasExited) {
+    if (-not (Get-Process -Id $PROTOCOL_PROC.Id -ErrorAction SilentlyContinue)) {
         Write-Output "Node has stopped. Restarting..."
         $IsAlive = $false
     }
