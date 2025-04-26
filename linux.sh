@@ -120,6 +120,7 @@ else
     chmod +x "$SCRIPT_PATH"
     rm "$TEMP_FILE"
     echo "Restarting script..."
+    sleep 3
     exec "$SCRIPT_PATH" "$@"
     echo "Error: exec failed"
     exit 1

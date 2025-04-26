@@ -121,6 +121,7 @@ if ((Get-FileHash $ScriptPath).Hash -eq (Get-FileHash $TempFile).Hash) {
     Remove-Item $TempFile
 
     Write-Output "Restarting script..."
+    Start-Sleep -Seconds 3
     # Start the new version and exit current
     Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File `"$ScriptPath`""
     exit
