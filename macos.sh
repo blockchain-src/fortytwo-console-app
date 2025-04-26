@@ -12,17 +12,17 @@ animate_text() {
 auto_select_model() {
     AVAILABLE_MEM=$(( $(sysctl -n hw.memsize) / 1024 / 1024 / 1024 ))
     animate_text "System analysis: ${AVAILABLE_MEM}GB RAM detected"
-    if [ $AVAILABLE_MEM -ge 22 ]; then
+    if [ $AVAILABLE_MEM -ge 32 ]; then
         animate_text "Recommended: SAPIENCE PYLON for problem solving & logical reasoning"
         LLM_HF_REPO="Qwen/QwQ-32B-GGUF"
         LLM_HF_MODEL_NAME="qwq-32b-q4_k_m.gguf"
         NODE_NAME="SAPIENCE PYLON"
-    elif [ $AVAILABLE_MEM -ge 16 ]; then
+    elif [ $AVAILABLE_MEM -ge 24 ]; then
         animate_text "Recommended: NUMERICON PYLON for mathematical intelligence"
         LLM_HF_REPO="unsloth/phi-4-GGUF"
         LLM_HF_MODEL_NAME="phi-4-Q4_K_M.gguf"
         NODE_NAME="NUMERICON PYLON"
-    elif [ $AVAILABLE_MEM -ge 8 ]; then
+    elif [ $AVAILABLE_MEM -ge 12 ]; then
         animate_text "Recommended: NEXUS for balanced capability"
         LLM_HF_REPO="bartowski/Llama-3.2-3B-Instruct-GGUF"
         LLM_HF_MODEL_NAME="Llama-3.2-3B-Instruct-Q4_K_M.gguf"

@@ -24,17 +24,17 @@ function Auto-Select-Model {
     }
 
     $AVAILABLE_MEM_INT = [math]::Round($AVAILABLE_MEM)
-    if ($AVAILABLE_MEM_INT -ge 22) {
+    if ($AVAILABLE_MEM_INT -ge 32) {
         Animate-Text "Recommended: SAPIENCE PYLON for problem solving & logical reasoning"
         $global:LLM_HF_REPO = "Qwen/QwQ-32B-GGUF"
         $global:LLM_HF_MODEL_NAME = "qwq-32b-q4_k_m.gguf"
         $global:NODE_NAME = "SAPIENCE PYLON"
-    } elseif ($AVAILABLE_MEM_INT -ge 16) {
+    } elseif ($AVAILABLE_MEM_INT -ge 24) {
         Animate-Text "Recommended: NUMERICON PYLON for mathematical intelligence"
         $global:LLM_HF_REPO = "unsloth/phi-4-GGUF"
         $global:LLM_HF_MODEL_NAME = "phi-4-Q4_K_M.gguf"
         $global:NODE_NAME = "NUMERICON PYLON"
-    } elseif ($AVAILABLE_MEM_INT -ge 8) {
+    } elseif ($AVAILABLE_MEM_INT -ge 12) {
         Animate-Text "Recommended: NOUMENAL PYLON for balanced capability"
         $global:LLM_HF_REPO = "bartowski/Llama-3.2-3B-Instruct-GGUF"
         $global:LLM_HF_MODEL_NAME = "Llama-3.2-3B-Instruct-Q4_K_M.gguf"
