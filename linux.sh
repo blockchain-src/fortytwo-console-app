@@ -490,6 +490,7 @@ cleanup() {
     exit 0
 }
 
+startup
 trap cleanup SIGINT SIGTERM SIGHUP EXIT
 
 while true; do
