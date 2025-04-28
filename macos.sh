@@ -179,7 +179,7 @@ animate_text "⨳ Utils — version $UTILS_VERSION"
 DOWNLOAD_UTILS_URL="https://fortytwo-network-public.s3.us-east-2.amazonaws.com/utilities/v$UTILS_VERSION/FortytwoUtilsDarwin"
 if [[ -f "$UTILS_EXEC" ]]; then
     CURRENT_UTILS_VERSION_OUTPUT=$("$UTILS_EXEC" --version 2>/dev/null)
-    if [[ "CURRENT_UTILS_VERSION_OUTPUT" == *"UTILS_VERSION"* ]]; then
+    if [[ "$CURRENT_UTILS_VERSION_OUTPUT" == *"$UTILS_VERSION"* ]]; then
         animate_text "    ✓ Up to date"
     else
         animate_text "    ↳ Updating..."
@@ -455,13 +455,17 @@ startup() {
 }
 
 cleanup() {
-    animate_text "⎔ Stopping capsule..."
-    kill "$CAPSULE_PID"
-    animate_text "⏃ Stopping protocol..."
-    kill "$PROTOCOL_PID"
     echo
-    animate_text "Processes stopped"
-    animate_text "Bye, Noderunner"
+    capsule_stopped=$(kill -0 "$CAPSULE_PID" 2>/dev/null && kill "$CAPSULE_PID" 2>/dev/null && echo true || echo false)
+    [ "$capsule_stopped" = true ] && animate_text "⎔ Stopping capsule..."
+
+    protocol_stopped=$(kill -0 "$PROTOCOL_PID" 2>/dev/null && kill "$PROTOCOL_PID" 2>/dev/null && echo true || echo false)
+    [ "$protocol_stopped" = true ] && animate_text "⏃ Stopping protocol..."
+
+    if [ "$capsule_stopped" = true ] || [ "$protocol_stopped" = true ]; then
+        animate_text "Processes stopped"
+        animate_text "Bye, Noderunner"
+    fi
     exit 0
 }
 
@@ -482,8 +486,8 @@ while true; do
 
     if [[ $IS_ALIVE == "false" ]]; then
         animate_text "Capsule or Protocol process has stopped. Restarting..."
-        kill "$CAPSULE_PID"
-        kill "$PROTOCOL_PID"
+        kill "$CAPSULE_PID" 2>/dev/null
+        kill "$PROTOCOL_PID" 2>/dev/null
         startup
     fi
 
