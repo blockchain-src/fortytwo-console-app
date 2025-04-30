@@ -58,9 +58,9 @@ function Auto-Select-Model {
     $AVAILABLE_MEM_INT = [math]::Round($AVAILABLE_MEM)
     if ($AVAILABLE_MEM_INT -ge 32) {
         Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_SELECTED 7 Qwen2.5-Coder for problem solving & logical reasoning"
-        $global:LLM_HF_REPO = "Qwen/Qwen2.5-Coder-32B-Instruct-GGUF"
-        $global:LLM_HF_MODEL_NAME = "qwen2.5-coder-32b-instruct-q4_k_m-00001-of-00003.gguf"
-        $global:NODE_NAME = "Qwen2.5-Coder 32B Instruct Q4_K_M"
+        $global:LLM_HF_REPO = "unsloth/Qwen3-30B-A3B-GGUF"
+        $global:LLM_HF_MODEL_NAME = "Qwen3-30B-A3B-Q4_K_M.gguf"
+        $global:NODE_NAME = "Qwen3 30B A3B Q4_K_M"
     } elseif ($AVAILABLE_MEM_INT -ge 24) {
         Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_SELECTED 8 Phi-4 for mathematical intelligence"
         $global:LLM_HF_REPO = "unsloth/phi-4-GGUF"
@@ -415,10 +415,10 @@ Write-Host "|===================================================================
 Animate-Text-x2 "| 5 $SYMBOL_MODEL_SELECTED ACADEMIC KNOWLEDGE             Ministral 8B Instruct 2410 $SYMBOL_SEPARATOR_DOT 5.2GB RAM |"
 Write-Host "|     Advanced data integration and research synthesis protocol.            |"
 Write-Host "|===========================================================================|"
-Animate-Text-x2 "| 6 $SYMBOL_MODEL_SELECTED LANGUAGE & WRITING                    Qwen2.5 7B Instruct $SYMBOL_SEPARATOR_DOT 4.8GB RAM |"
+Animate-Text-x2 "| 6 $SYMBOL_MODEL_SELECTED LANGUAGE & WRITING                               Qwen3 8B $SYMBOL_SEPARATOR_DOT 5.1GB RAM |"
 Write-Host "|     Enhanced natural language and communication protocol interface.       |"
 Write-Host "|===========================================================================|"
-Animate-Text-x2 "| 7 $SYMBOL_MODEL_SELECTED LOGICAL REASONING               Qwen2.5-Coder 32B Instruct $SYMBOL_SEPARATOR_DOT 21GB RAM |"
+Animate-Text-x2 "| 7 $SYMBOL_MODEL_SELECTED LOGICAL REASONING                          Qwen3 30B A3B $SYMBOL_SEPARATOR_DOT 18.6GB RAM |"
 Write-Host "|     High-level reasoning, mathematical problem-solving                    |"
 Write-Host "|     and competitive coding.                                               |"
 Write-Host "|===========================================================================|"
@@ -471,14 +471,14 @@ switch ($NODE_CLASS) {
         $NODE_NAME = " $SYMBOL_MODEL_SELECTED ACADEMIC KNOWLEDGE: Ministral 8B Instruct 2410 Q4_K_M"
     }
     "6" {
-        $LLM_HF_REPO = "Qwen/Qwen2.5-7B-Instruct-GGUF"
-        $LLM_HF_MODEL_NAME = "qwen2.5-7b-instruct-q4_k_m-00001-of-00002.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED LANGUAGE & WRITING: Qwen2.5 7B Instruct Q4_K_M"
+        $LLM_HF_REPO = "unsloth/Qwen3-8B-GGUF"
+        $LLM_HF_MODEL_NAME = "Qwen3-8B-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED LANGUAGE & WRITING: Qwen3 8B Q4_K_M"
     }
     "7" {
-        $LLM_HF_REPO = "Qwen/Qwen2.5-Coder-32B-Instruct-GGUF"
-        $LLM_HF_MODEL_NAME = "qwen2.5-coder-32b-instruct-q4_k_m-00001-of-00003.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED LOGICAL REASONING: Qwen2.5-Coder 32B Instruct Q4_K_M"
+        $LLM_HF_REPO = "unsloth/Qwen3-30B-A3B-GGUF"
+        $LLM_HF_MODEL_NAME = "Qwen3-30B-A3B-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED LOGICAL REASONING: Qwen3 30B A3B Q4_K_M"
     }
     "8" {
         $LLM_HF_REPO = "unsloth/phi-4-GGUF"

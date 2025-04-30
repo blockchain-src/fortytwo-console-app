@@ -30,9 +30,9 @@ auto_select_model() {
 
     if [ "$AVAILABLE_MEM_INT" -ge 32 ]; then
         animate_text "    🜲 Recommending: ⬢ 7 Qwen2.5-Coder for problem solving & logical reasoning"
-        LLM_HF_REPO="Qwen/Qwen2.5-Coder-32B-Instruct-GGUF"
-        LLM_HF_MODEL_NAME="qwen2.5-coder-32b-instruct-q4_k_m-00001-of-00003.gguf"
-        NODE_NAME="Qwen2.5-Coder 32B Instruct Q4_K_M"
+        LLM_HF_REPO="unsloth/Qwen3-30B-A3B-GGUF"
+        LLM_HF_MODEL_NAME="Qwen3-30B-A3B-Q4_K_M.gguf"
+        NODE_NAME="Qwen3 30B A3B Q4_K_M"
     elif [ "$AVAILABLE_MEM_INT" -ge 24 ]; then
         animate_text "    🜲 Recommending: ⬢ 8 Phi-4 for mathematical intelligence"
         LLM_HF_REPO="unsloth/phi-4-GGUF"
@@ -350,10 +350,10 @@ echo "╠═══════════════════════�
 animate_text_x2 "║ 5 ⬢ ACADEMIC KNOWLEDGE             Ministral 8B Instruct 2410 • 5.2GB RAM ║"
 echo "║     Advanced data integration and research synthesis protocol.            ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 6 ⬢ LANGUAGE & WRITING                    Qwen2.5 7B Instruct • 4.8GB RAM ║"
+animate_text_x2 "║ 6 ⬢ LANGUAGE & WRITING                               Qwen3 8B • 5.1GB RAM ║"
 echo "║     Enhanced natural language and communication protocol interface.       ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 7 ⬢ LOGICAL REASONING               Qwen2.5-Coder 32B Instruct • 21GB RAM ║"
+animate_text_x2 "║ 7 ⬢ LOGICAL REASONING                          Qwen3 30B A3B • 18.6GB RAM ║"
 echo "║     High-level reasoning, mathematical problem-solving                    ║"
 echo "║     and competitive coding.                                               ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
@@ -408,14 +408,14 @@ case $NODE_CLASS in
         NODE_NAME="⬢ ACADEMIC KNOWLEDGE: Ministral 8B Instruct 2410 Q4_K_M"
         ;;
     6)
-        LLM_HF_REPO="Qwen/Qwen2.5-7B-Instruct-GGUF"
-        LLM_HF_MODEL_NAME="qwen2.5-7b-instruct-q4_k_m-00001-of-00002.gguf"
-        NODE_NAME="⬢ LANGUAGE & WRITING: Qwen2.5 7B Instruct Q4_K_M"
+        LLM_HF_REPO="unsloth/Qwen3-8B-GGUF"
+        LLM_HF_MODEL_NAME="Qwen3-8B-Q4_K_M.gguf"
+        NODE_NAME="⬢ LANGUAGE & WRITING: Qwen3 8B Q4_K_M"
         ;;
     7)
-        LLM_HF_REPO="Qwen/Qwen2.5-Coder-32B-Instruct-GGUF"
-        LLM_HF_MODEL_NAME="qwen2.5-coder-32b-instruct-q4_k_m-00001-of-00003.gguf"
-        NODE_NAME="⬢ LOGICAL REASONING: Qwen2.5-Coder 32B Instruct Q4_K_M"
+        LLM_HF_REPO="unsloth/Qwen3-30B-A3B-GGUF"
+        LLM_HF_MODEL_NAME="Qwen3-30B-A3B-Q4_K_M.gguf"
+        NODE_NAME="⬢ LOGICAL REASONING: Qwen3 30B A3B Q4_K_M"
         ;;
     8)
         LLM_HF_REPO="unsloth/phi-4-GGUF"
