@@ -29,7 +29,7 @@ auto_select_model() {
     AVAILABLE_MEM_INT=$(printf "%.0f" "$AVAILABLE_MEM")
 
     if [ "$AVAILABLE_MEM_INT" -ge 32 ]; then
-        animate_text "    🜲 Recommending: ⬢ 7 Qwen2.5-Coder for problem solving & logical reasoning"
+        animate_text "    🜲 Recommending: ⬢ 7 Qwen3 for problem solving & logical reasoning"
         LLM_HF_REPO="unsloth/Qwen3-30B-A3B-GGUF"
         LLM_HF_MODEL_NAME="Qwen3-30B-A3B-Q4_K_M.gguf"
         NODE_NAME="Qwen3 30B A3B Q4_K_M"
@@ -44,10 +44,10 @@ auto_select_model() {
         LLM_HF_MODEL_NAME="Llama-3.2-3B-Instruct-Q4_K_M.gguf"
         NODE_NAME="Llama 3.2 3B Instruct Q4_K_M"
     else
-        animate_text "    🜲 Recommending: ✶ 1 Custom Import Qwen 2.5 optimized for efficiency"
-        LLM_HF_REPO="Qwen/Qwen2.5-1.5B-Instruct-GGUF"
-        LLM_HF_MODEL_NAME="qwen2.5-1.5b-instruct-q4_k_m.gguf"
-        NODE_NAME="Qwen 2.5 1.5B Instruct Q4_K_M"
+        animate_text "    🜲 Recommending: ✶ 1 Custom Import Qwen 3 optimized for efficiency"
+        LLM_HF_REPO="unsloth/Qwen3-1.7B-GGUF"
+        LLM_HF_MODEL_NAME="Qwen3-1.7B-Q4_K_M.gguf"
+        NODE_NAME="Qwen 3 1.7B Q4_K_M"
     fi
 }
 
