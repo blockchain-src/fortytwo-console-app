@@ -32,22 +32,22 @@ auto_select_model() {
         animate_text "    🜲 Recommending: ⬢ 7 Qwen3 for problem solving & logical reasoning"
         LLM_HF_REPO="unsloth/Qwen3-30B-A3B-GGUF"
         LLM_HF_MODEL_NAME="Qwen3-30B-A3B-Q4_K_M.gguf"
-        NODE_NAME="Qwen3 30B A3B Q4_K_M"
+        NODE_NAME="Qwen3 30B A3B Q4"
     elif [ "$AVAILABLE_MEM_INT" -ge 24 ]; then
-        animate_text "    🜲 Recommending: ⬢ 8 Phi-4 for mathematical intelligence"
-        LLM_HF_REPO="unsloth/phi-4-GGUF"
-        LLM_HF_MODEL_NAME="phi-4-Q4_K_M.gguf"
-        NODE_NAME="Phi-4 Q4_K_M"
+        animate_text "    🜲 Recommending: ⬢ 8 Phi-4 reasoning for high-precision logical analysis"
+        LLM_HF_REPO="unsloth/Phi-4-reasoning-GGUF"
+        LLM_HF_MODEL_NAME="phi-4-reasoning-Q4_K_M.gguf"
+        NODE_NAME="Phi-4 reasoning Q4"
     elif [ "$AVAILABLE_MEM_INT" -ge 12 ]; then
-        animate_text "    🜲 Recommending: ⬢ 2 Llama 3.2 for balanced capability"
-        LLM_HF_REPO="bartowski/Llama-3.2-3B-Instruct-GGUF"
-        LLM_HF_MODEL_NAME="Llama-3.2-3B-Instruct-Q4_K_M.gguf"
-        NODE_NAME="Llama 3.2 3B Instruct Q4_K_M"
+        animate_text "    🜲 Recommending: ⬢ 7 Qwen3 8B for balanced capability"
+        LLM_HF_REPO="unsloth/Qwen3-8B-GGUF"
+        LLM_HF_MODEL_NAME="Qwen3-8B-Q4_K_M.gguf"
+        NODE_NAME="Qwen3 8B Q4"
     else
         animate_text "    🜲 Recommending: ✶ 1 Custom Import Qwen 3 optimized for efficiency"
         LLM_HF_REPO="unsloth/Qwen3-1.7B-GGUF"
         LLM_HF_MODEL_NAME="Qwen3-1.7B-Q4_K_M.gguf"
-        NODE_NAME="Qwen 3 1.7B Q4_K_M"
+        NODE_NAME="Qwen 3 1.7B Q4"
     fi
 }
 
@@ -335,43 +335,57 @@ echo "║     Let the system determine the best model for your hardware.        
 echo "║     Balanced for performance and capabilities.                            ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
 animate_text_x2 "║ 1 ✶ IMPORT CUSTOM - Advanced configuration                                ║"
-#echo "╠═══════════════════════════════════════════════════════════════════════════╣"
+echo "╚═══════════════════════════════════════════════════════════════════════════╝"
 #animate_text_x2 "║ 2 ↺ LAST USED - Run the model that was run the last time                  ║"
-echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 2 ⬢ GENERAL KNOWLEDGE                   Llama 3.2 3B Instruct • 2.2GB RAM ║"
+echo "               HEAVY TIER | Dedicating all Compute to the Node               "
+echo "╔═══════════════════════════════════════════════════════════════════════════╗"
+animate_text_x2 "║ 2 ⬢ GENERAL KNOWLEDGE                           Qwen3 32B Q4 • 19.8GB RAM ║"
 echo "║     Versatile multi-domain intelligence core with balanced capabilities.  ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 3 ⬢ ADVANCED REASONING                   INTELLECT-1 Instruct • 6.5GB RAM ║"
+animate_text_x2 "║ 3 ⬢ ADVANCED REASONING                      Qwen3 30B A3B Q4 • 18.6GB RAM ║"
 echo "║     High-precision logical analysis matrix optimized for problem-solving. ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 4 ⬢ PROGRAMMING & TECHNICAL         Qwen2.5 Coder 7B Instruct • 4.8GB RAM ║"
-echo "║     Specialized system for code synthesis and framework construction.     ║"
-echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 5 ⬢ ACADEMIC KNOWLEDGE             Ministral 8B Instruct 2410 • 5.2GB RAM ║"
-echo "║     Advanced data integration and research synthesis protocol.            ║"
-echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 6 ⬢ LANGUAGE & WRITING                               Qwen3 8B • 5.1GB RAM ║"
-echo "║     Enhanced natural language and communication protocol interface.       ║"
-echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 7 ⬢ LOGICAL REASONING                          Qwen3 30B A3B • 18.6GB RAM ║"
-echo "║     High-level reasoning, mathematical problem-solving                    ║"
-echo "║     and competitive coding.                                               ║"
-echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 8 ⬢ MATHEMATICAL INTELLIGENCE                       Phi-4 14B • 9.1GB RAM ║"
+animate_text_x2 "║ 4 ⬢ PROGRAMMING & ALGORITHMS             OlympicCoder 32B Q4 • 19.9GB RAM ║"
 echo "║     Optimized for symbolic reasoning, step-by-step math solutions         ║"
 echo "║     and logic-based inference.                                            ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 9 ⬢ MULTILINGUAL UNDERSTANDING                     Gemma-3 4B • 3.3GB RAM ║"
+animate_text_x2 "║ 5 ⬢ COMPLEX RESEARCH                         GLM-4-Z1 32B Q4 • 19.7GB RAM ║"
+echo "╠═══════════════════════════════════════════════════════════════════════════╣"
+animate_text_x2 "║ 6 ⬢ ACADEMIC KNOWLEDGE     Llama-4 Scout 17B 16E Instruct Q4 • 65.4GB RAM ║"
+echo "║     Advanced data integration and research synthesis protocol.            ║"
+echo "╚═══════════════════════════════════════════════════════════════════════════╝"
+echo "                LIGHT TIER | Operating the Node in Background                "
+echo "╔═══════════════════════════════════════════════════════════════════════════╗"
+animate_text_x2 "║ 7 ⬢ GENERAL KNOWLEDGE                             Qwen3 8B Q4 • 5.1GB RAM ║"
+echo "║     Versatile multi-domain intelligence core with balanced capabilities.  ║"
+echo "╠═══════════════════════════════════════════════════════════════════════════╣"
+animate_text_x2 "║ 8 ⬢ ADVANCED REASONING                 Phi-4 14B reasoning Q4 • 9.1GB RAM ║"
+echo "║     High-precision logical analysis matrix optimized for problem-solving. ║"
+echo "╠═══════════════════════════════════════════════════════════════════════════╣"
+animate_text_x2 "║ 9 ⬢ PROGRAMMING & TECHNICAL                  DeepCoder 14B Q4 • 9.1GB RAM ║"
+echo "║     Specialized system for code synthesis and framework construction.     ║"
+echo "╠═══════════════════════════════════════════════════════════════════════════╣"
+animate_text_x2 "║ 10 ⬢ LONG CONTEXT MODEL          Llama-3.1 8B UltraLong 4M Q4 • 5.1GB RAM ║"
+echo "╠═══════════════════════════════════════════════════════════════════════════╣"
+animate_text_x2 "║ 11 ⬢ MATHEMATICAL INTELLIGENCE       OpenMath-Nemotron 14B Q4 • 9.1GB RAM ║"
+echo "║     Optimized for symbolic reasoning, step-by-step math solutions         ║"
+echo "║     and logic-based inference.                                            ║"
+echo "╠═══════════════════════════════════════════════════════════════════════════╣"
+animate_text_x2 "║ 12 ⬢ MULTILINGUAL UNDERSTANDING                 Gemma-3 4B Q4 • 2.6GB RAM ║"
 echo "║     Balanced intelligence with high-quality cross-lingual comprehension,  ║"
 echo "║     translation and multilingual reasoning.                               ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 10 ⬢ COMPETITIVE PROGRAMMING & ALGORITHMS     OlympicCoder 7B • 4.8GB RAM ║"
-echo "║     Optimized for competitive coding, excelling in algorithmic challenges ║"
-echo "║     and CodeForces-style programming tasks.                               ║"
+animate_text_x2 "║ 13 ⬢ RUST PROGRAMMING                     Tessa-Rust-T1 7B Q6 • 6.3GB RAM ║"
+echo "╠═══════════════════════════════════════════════════════════════════════════╣"
+animate_text_x2 "║ 14 ⬢ PROGRAMMING & ALGORITHMS              OlympicCoder 7B Q6 • 6.3GB RAM ║"
+echo "║     Optimized for symbolic reasoning, step-by-step math solutions         ║"
+echo "║     and logic-based inference.                                            ║"
+echo "╠═══════════════════════════════════════════════════════════════════════════╣"
+animate_text_x2 "║ 15 ⬢ LOW MEMORY MODEL                           Qwen3 1.7B Q4 • 1.2GB RAM ║"
 echo "╚═══════════════════════════════════════════════════════════════════════════╝"
 echo
 
-read -r -p "Select your node's specialization [0-10] (0 for auto-select): " NODE_CLASS
+read -r -p "Select your node's specialization [0-15] (0 for auto-select): " NODE_CLASS
 
 case $NODE_CLASS in
     0)
@@ -388,49 +402,74 @@ case $NODE_CLASS in
         NODE_NAME="✶ CUSTOM IMPORT: HuggingFace ${LLM_HF_REPO##*/}"
         ;;
     2)
-        LLM_HF_REPO="bartowski/Llama-3.2-3B-Instruct-GGUF"
-        LLM_HF_MODEL_NAME="Llama-3.2-3B-Instruct-Q4_K_M.gguf"
-        NODE_NAME="⬢ GENERAL KNOWLEDGE: Llama 3.2 3B Instruct Q4_K_M"
+        LLM_HF_REPO="unsloth/Qwen3-32B-GGUF"
+        LLM_HF_MODEL_NAME="Qwen3-32B-Q4_K_M.gguf"
+        NODE_NAME="⬢ GENERAL KNOWLEDGE: Qwen3 32B Q4"
         ;;
     3)
-        LLM_HF_REPO="bartowski/INTELLECT-1-Instruct-GGUF"
-        LLM_HF_MODEL_NAME="INTELLECT-1-Instruct-Q4_K_M.gguf"
-        NODE_NAME="⬢ ADVANCED REASONING: INTELLECT-1 Instruct Q4_K_M"
-        ;;
-    4)
-        LLM_HF_REPO="Qwen/Qwen2.5-Coder-7B-Instruct-GGUF"
-        LLM_HF_MODEL_NAME="qwen2.5-coder-7b-instruct-q4_k_m-00001-of-00002.gguf"
-        NODE_NAME="⬢ PROGRAMMING & TECHNICAL: Qwen2.5 Coder 7B Instruct Q4_K_M"
-        ;;
-    5)
-        LLM_HF_REPO="bartowski/Ministral-8B-Instruct-2410-GGUF"
-        LLM_HF_MODEL_NAME="Ministral-8B-Instruct-2410-Q4_K_M.gguf"
-        NODE_NAME="⬢ ACADEMIC KNOWLEDGE: Ministral 8B Instruct 2410 Q4_K_M"
-        ;;
-    6)
-        LLM_HF_REPO="unsloth/Qwen3-8B-GGUF"
-        LLM_HF_MODEL_NAME="Qwen3-8B-Q4_K_M.gguf"
-        NODE_NAME="⬢ LANGUAGE & WRITING: Qwen3 8B Q4_K_M"
-        ;;
-    7)
         LLM_HF_REPO="unsloth/Qwen3-30B-A3B-GGUF"
         LLM_HF_MODEL_NAME="Qwen3-30B-A3B-Q4_K_M.gguf"
-        NODE_NAME="⬢ LOGICAL REASONING: Qwen3 30B A3B Q4_K_M"
+        NODE_NAME="⬢ ADVANCED REASONING: Qwen3 30B A3B Q4"
+        ;;
+    4)
+        LLM_HF_REPO="bartowski/open-r1_OlympicCoder-32B-GGUF"
+        LLM_HF_MODEL_NAME="open-r1_OlympicCoder-32B-Q4_K_M.gguf"
+        NODE_NAME="⬢ PROGRAMMING & ALGORITHMS: OlympicCoder 32B Q4"
+        ;;
+    5)
+        LLM_HF_REPO="bartowski/THUDM_GLM-Z1-32B-0414-GGUF"
+        LLM_HF_MODEL_NAME="THUDM_GLM-Z1-32B-0414-Q4_K_M.gguf"
+        NODE_NAME="⬢ COMPLEX RESEARCH: GLM-4-Z1 32B Q4"
+        ;;
+    6)
+        LLM_HF_REPO="unsloth/Llama-4-Scout-17B-16E-Instruct-GGUF"
+        LLM_HF_MODEL_NAME="Llama-4-Scout-17B-16E-Instruct-Q4_K_M-00001-of-00002.gguf"
+        NODE_NAME="⬢ ACADEMIC KNOWLEDGE: Llama-4 Scout 17B 16E Instruct Q4"
+        ;;
+    7)
+        LLM_HF_REPO="unsloth/Qwen3-8B-GGUF"
+        LLM_HF_MODEL_NAME="Qwen3-8B-Q4_K_M.gguf"
+        NODE_NAME="⬢ GENERAL KNOWLEDGE: Qwen3 8B Q4"
         ;;
     8)
-        LLM_HF_REPO="unsloth/phi-4-GGUF"
-        LLM_HF_MODEL_NAME="phi-4-Q4_K_M.gguf"
-        NODE_NAME="⬢ MATHEMATICAL INTELLIGENCE: Phi-4 14B Q4_K_M"
+        LLM_HF_REPO="unsloth/Phi-4-reasoning-GGUF"
+        LLM_HF_MODEL_NAME="phi-4-reasoning-Q4_K_M.gguf"
+        NODE_NAME="⬢ ADVANCED REASONING: Phi-4 14B reasoning Q4"
         ;;
     9)
-        LLM_HF_REPO="unsloth/gemma-3-12b-it-GGUF"
-        LLM_HF_MODEL_NAME="gemma-3-12b-it-Q4_K_M.gguf"
-        NODE_NAME="⬢ MULTILINGUAL UNDERSTANDING: Gemma-3 4B Q4_K_M"
+        LLM_HF_REPO="bartowski/agentica-org_DeepCoder-14B-Preview-GGUF"
+        LLM_HF_MODEL_NAME="agentica-org_DeepCoder-14B-Preview-Q4_K_M.gguf"
+        NODE_NAME="⬢ PROGRAMMING & TECHNICAL: DeepCoder 14B Q4"
         ;;
     10)
+        LLM_HF_REPO="bartowski/nvidia_Llama-3.1-8B-UltraLong-4M-Instruct-GGUF"
+        LLM_HF_MODEL_NAME="nvidia_Llama-3.1-8B-UltraLong-4M-Instruct-Q4_K_M.gguf"
+        NODE_NAME="⬢ LONG CONTEXT MODEL: Llama-3.1 8B UltraLong 4M Q4"
+        ;;
+    11)
+        LLM_HF_REPO="bartowski/nvidia_OpenMath-Nemotron-14B-GGUF"
+        LLM_HF_MODEL_NAME="nvidia_OpenMath-Nemotron-14B-Q4_K_M.gguf"
+        NODE_NAME="⬢ MATHEMATICAL INTELLIGENCE: OpenMath-Nemotron 14B Q4"
+        ;;
+    12)
+        LLM_HF_REPO="unsloth/gemma-3-4b-it-GGUF"
+        LLM_HF_MODEL_NAME="gemma-3-4b-it-Q4_K_M.gguf"
+        NODE_NAME="⬢ MULTILINGUAL UNDERSTANDING: Gemma-3 4B Q4"
+        ;;
+    13)
+        LLM_HF_REPO="bartowski/Tesslate_Tessa-Rust-T1-7B-GGUF"
+        LLM_HF_MODEL_NAME="Tesslate_Tessa-Rust-T1-7B-Q4_K_M.gguf"
+        NODE_NAME="⬢ RUST PROGRAMMING: Tessa-Rust-T1 7B Q6"
+        ;;
+    14)
         LLM_HF_REPO="bartowski/open-r1_OlympicCoder-7B-GGUF"
         LLM_HF_MODEL_NAME="open-r1_OlympicCoder-7B-Q4_K_M.gguf"
-        NODE_NAME="⬢ COMPETITIVE PROGRAMMING & ALGORITHMS: OlympicCoder 7B Q4_K_M"
+        NODE_NAME="⬢ PROGRAMMING & ALGORITHMS: OlympicCoder 7B Q6"
+        ;;
+    15)
+        LLM_HF_REPO="unsloth/Qwen3-1.7B-GGUF"
+        LLM_HF_MODEL_NAME="Qwen3-1.7B-Q4_K_M.gguf"
+        NODE_NAME="⬢ LOW MEMORY MODEL: Qwen3 1.7B Q4"
         ;;
     *)
         animate_text "No selection made. Continuing with [0] ⌖ AUTO-SELECT..."

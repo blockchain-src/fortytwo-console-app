@@ -63,14 +63,14 @@ function Auto-Select-Model {
         $global:NODE_NAME = "Qwen3 30B A3B Q4_K_M"
     } elseif ($AVAILABLE_MEM_INT -ge 24) {
         Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_SELECTED 8 Phi-4 for mathematical intelligence"
-        $global:LLM_HF_REPO = "unsloth/phi-4-GGUF"
-        $global:LLM_HF_MODEL_NAME = "phi-4-Q4_K_M.gguf"
+        $global:LLM_HF_REPO = "unsloth/Phi-4-reasoning-GGUF"
+        $global:LLM_HF_MODEL_NAME = "phi-4-reasoning-Q4_K_M.gguf"
         $global:NODE_NAME = "Phi-4 Q4_K_M"
     } elseif ($AVAILABLE_MEM_INT -ge 12) {
         Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_SELECTED 2 Llama 3.2 for balanced capability"
-        $global:LLM_HF_REPO = "bartowski/Llama-3.2-3B-Instruct-GGUF"
-        $global:LLM_HF_MODEL_NAME = "Llama-3.2-3B-Instruct-Q4_K_M.gguf"
-        $global:NODE_NAME = "Llama 3.2 3B Instruct Q4_K_M"
+        $global:LLM_HF_REPO = "unsloth/Qwen3-4B-GGUF"
+        $global:LLM_HF_MODEL_NAME = "Qwen3-32B-Q4_K_M.gguf"
+        $global:NODE_NAME = "Qwen3 32B Q4"
     } else {
         Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_CUSTOM 1 Custom Import Qwen 3 optimized for efficiency"
         $global:LLM_HF_REPO = "unsloth/Qwen3-1.7B-GGUF"
@@ -451,49 +451,49 @@ switch ($NODE_CLASS) {
         $NODE_NAME = " $SYMBOL_MODEL_CUSTOM CUSTOM IMPORT: HuggingFace $($LLM_HF_REPO -split '/' | Select-Object -Last 1))"
     }
     "2" {
-        $LLM_HF_REPO = "bartowski/Llama-3.2-3B-Instruct-GGUF"
-        $LLM_HF_MODEL_NAME = "Llama-3.2-3B-Instruct-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED GENERAL KNOWLEDGE: Llama 3.2 3B Instruct Q4_K_M"
+        $LLM_HF_REPO = "unsloth/Qwen3-32B-GGUF"
+        $LLM_HF_MODEL_NAME = "Qwen3-32B-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED GENERAL KNOWLEDGE: Qwen3 32B Q4"
     }
     "3" {
-        $LLM_HF_REPO = "bartowski/INTELLECT-1-Instruct-GGUF"
-        $LLM_HF_MODEL_NAME = "INTELLECT-1-Instruct-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED ADVANCED REASONING: INTELLECT-1 Instruct Q4_K_M"
-    }
-    "4" {
-        $LLM_HF_REPO = "Qwen/Qwen2.5-Coder-7B-Instruct-GGUF"
-        $LLM_HF_MODEL_NAME = "qwen2.5-coder-7b-instruct-q4_k_m-00001-of-00002.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED PROGRAMMING & TECHNICAL: Qwen2.5 Coder 7B Instruct Q4_K_M"
-    }
-    "5" {
-        $LLM_HF_REPO = "bartowski/Ministral-8B-Instruct-2410-GGUF"
-        $LLM_HF_MODEL_NAME = "Ministral-8B-Instruct-2410-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED ACADEMIC KNOWLEDGE: Ministral 8B Instruct 2410 Q4_K_M"
-    }
-    "6" {
-        $LLM_HF_REPO = "unsloth/Qwen3-8B-GGUF"
-        $LLM_HF_MODEL_NAME = "Qwen3-8B-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED LANGUAGE & WRITING: Qwen3 8B Q4_K_M"
-    }
-    "7" {
         $LLM_HF_REPO = "unsloth/Qwen3-30B-A3B-GGUF"
         $LLM_HF_MODEL_NAME = "Qwen3-30B-A3B-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED LOGICAL REASONING: Qwen3 30B A3B Q4_K_M"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED ADVANCED REASONING: Qwen3 30B A3B Q4"
+    }
+    "4" {
+        $LLM_HF_REPO = "bartowski/open-r1_OlympicCoder-32B-GGUF"
+        $LLM_HF_MODEL_NAME = "open-r1_OlympicCoder-32B-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS: OlympicCoder 32B Q4"
+    }
+    "5" {
+        $LLM_HF_REPO = "bartowski/THUDM_GLM-Z1-32B-0414-GGUF"
+        $LLM_HF_MODEL_NAME = "THUDM_GLM-Z1-32B-0414-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED COMPLEX RESEARCH: GLM-4-Z1 32B Q4"
+    }
+    "6" {
+        $LLM_HF_REPO = "unsloth/Llama-4-Scout-17B-16E-Instruct-GGUF"
+        $LLM_HF_MODEL_NAME = "Llama-4-Scout-17B-16E-Instruct-Q4_K_M-00001-of-00002.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED ACADEMIC KNOWLEDGE: Llama-4 Scout 17B 16E Instruct Q4"
+    }
+    "7" {
+        $LLM_HF_REPO = "unsloth/Qwen3-8B-GGUF"
+        $LLM_HF_MODEL_NAME = "Qwen3-8B-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED GENERAL KNOWLEDGE: Qwen3 8B Q4"
     }
     "8" {
-        $LLM_HF_REPO = "unsloth/phi-4-GGUF"
-        $LLM_HF_MODEL_NAME = "phi-4-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED MATHEMATICAL INTELLIGENCE: Phi-4 14B Q4_K_M"
+        $LLM_HF_REPO = "unsloth/Phi-4-reasoning-GGUF"
+        $LLM_HF_MODEL_NAME = "phi-4-reasoning-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED ADVANCED REASONING: Phi-4 14B reasoning Q4"
     }
     "9" {
-        $LLM_HF_REPO = "unsloth/gemma-3-12b-it-GGUF"
-        $LLM_HF_MODEL_NAME = "gemma-3-12b-it-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED MULTILINGUAL UNDERSTANDING: Gemma-3 4B Q4_K_M"
+        $LLM_HF_REPO = "bartowski/agentica-org_DeepCoder-14B-Preview-GGUF"
+        $LLM_HF_MODEL_NAME = "agentica-org_DeepCoder-14B-Preview-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED PROGRAMMING & TECHNICAL: DeepCoder 14B Q4"
     }
     "10" {
-        $LLM_HF_REPO = "bartowski/open-r1_OlympicCoder-7B-GGUF"
-        $LLM_HF_MODEL_NAME = "open-r1_OlympicCoder-7B-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED COMPETITIVE PROGRAMMING & ALGORITHMS: OlympicCoder 7B Q4_K_M"
+        $LLM_HF_REPO = "bartowski/nvidia_Llama-3.1-8B-UltraLong-4M-Instruct-GGUF"
+        $LLM_HF_MODEL_NAME = "nvidia_Llama-3.1-8B-UltraLong-4M-Instruct-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED LONG CONTEXT MODEL: Llama-3.1 8B UltraLong 4M Q4"
     }
 
     Default {
