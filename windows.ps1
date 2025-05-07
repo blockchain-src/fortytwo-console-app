@@ -1,9 +1,3 @@
-if (Get-Command "nvidia-smi.exe" -ErrorAction SilentlyContinue) {
-    $MEMORY_TYPE="VRAM"
-} else {
-    $MEMORY_TYPE=" RAM"
-}
-
 function Animate-Text {
     param (
         [string]$text
@@ -61,17 +55,17 @@ function Auto-Select-Model {
     Animate-Text "    $SYMBOL_NEWLINE System analysis: $AVAILABLE_MEM GB $MEMORY_TYPE detected"
 
     $AVAILABLE_MEM_INT = [math]::Round($AVAILABLE_MEM)
-    if ($AVAILABLE_MEM_INT -ge 32) {
+    if ($AVAILABLE_MEM_INT -ge 22) {
         Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_SELECTED 3 Qwen3 for problem solving & logical reasoning"
         $global:LLM_HF_REPO = "unsloth/Qwen3-30B-A3B-GGUF"
         $global:LLM_HF_MODEL_NAME = "Qwen3-30B-A3B-Q4_K_M.gguf"
         $global:NODE_NAME = "Qwen3 30B A3B Q4"
-    } elseif ($AVAILABLE_MEM_INT -ge 24) {
-        Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_SELECTED 8 Phi-4 reasoning for high-precision logical analysis"
-        $global:LLM_HF_REPO = "unsloth/Phi-4-reasoning-GGUF"
-        $global:LLM_HF_MODEL_NAME = "phi-4-reasoning-Q4_K_M.gguf"
-        $global:NODE_NAME = "Phi-4 reasoning Q4"
-    } elseif ($AVAILABLE_MEM_INT -ge 12) {
+    } elseif ($AVAILABLE_MEM_INT -ge 15) {
+        Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_SELECTED 8 Qwen3 14B for high-precision logical analysis"
+        $global:LLM_HF_REPO = "unsloth/Qwen3-14B-GGUF"
+        $global:LLM_HF_MODEL_NAME = "Qwen3-14B-Q4_K_M.gguf"
+        $global:NODE_NAME = "Qwen3 14B Q4"
+    } elseif ($AVAILABLE_MEM_INT -ge 7) {
         Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_SELECTED 7 Qwen3 8B for balanced capability"
         $global:LLM_HF_REPO = "unsloth/Qwen3-8B-GGUF"
         $global:LLM_HF_MODEL_NAME = "Qwen3-8B-Q4_K_M.gguf"
@@ -88,6 +82,13 @@ Write-Host ""
 Animate-Text-x2 ($BANNER -join '')
 Animate-Text "      Welcome to ::|| Fortytwo, Noderunner."
 Write-Host ""
+if (Get-Command "nvidia-smi.exe" -ErrorAction SilentlyContinue) {
+    $MEMORY_TYPE="VRAM"
+} else {
+    $MEMORY_TYPE=" RAM"
+    Write-Output "    $SYMBOL_STATE_FAILURE ERROR: No compatible GPU found. This node application requires a GPU, but only a CPU was detected. Please ensure your system meets the minimum GPU requirements by reviewing our documentation: https://docs.fortytwo.network/docs/hardware-requirements"
+    exit 1
+}
 
 $PROJECT_DIR = "FortytwoNode"
 $PROJECT_DEBUG_DIR = "$PROJECT_DIR\debug"
@@ -431,7 +432,7 @@ Write-Host "|===================================================================
 Animate-Text-x2 "| 7 $SYMBOL_MODEL_SELECTED GENERAL KNOWLEDGE                             Qwen3 8B Q4 $SYMBOL_SEPARATOR_DOT 5.1GB $MEMORY_TYPE |"
 Write-Host "|     Versatile multi-domain intelligence core with balanced capabilities.   |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 8 $SYMBOL_MODEL_SELECTED ADVANCED REASONING                 Phi-4 14B reasoning Q4 $SYMBOL_SEPARATOR_DOT 9.1GB $MEMORY_TYPE |"
+Animate-Text-x2 "| 8 $SYMBOL_MODEL_SELECTED ADVANCED REASONING                           Qwen3 14B Q4 $SYMBOL_SEPARATOR_DOT 9.1GB $MEMORY_TYPE |"
 Write-Host "|     High-precision logical analysis matrix optimized for problem-solving.  |"
 Write-Host "|============================================================================|"
 Animate-Text-x2 "| 9 $SYMBOL_MODEL_SELECTED PROGRAMMING & TECHNICAL                  DeepCoder 14B Q4 $SYMBOL_SEPARATOR_DOT 9.1GB $MEMORY_TYPE |"
@@ -512,9 +513,9 @@ switch ($NODE_CLASS) {
         $NODE_NAME = " $SYMBOL_MODEL_SELECTED GENERAL KNOWLEDGE: Qwen3 8B Q4"
     }
     "8" {
-        $LLM_HF_REPO = "unsloth/Phi-4-reasoning-GGUF"
-        $LLM_HF_MODEL_NAME = "phi-4-reasoning-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED ADVANCED REASONING: Phi-4 14B reasoning Q4"
+        $LLM_HF_REPO = "unsloth/Qwen3-14B-GGUF"
+        $LLM_HF_MODEL_NAME = "Qwen3-14B-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED ADVANCED REASONING: Qwen3 14B Q4"
     }
     "9" {
         $LLM_HF_REPO = "bartowski/agentica-org_DeepCoder-14B-Preview-GGUF"

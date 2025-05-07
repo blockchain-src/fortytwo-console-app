@@ -1,7 +1,5 @@
 #!/bin/bash
 
-MEMORY_TYPE="RAM"
-
 animate_text() {
     local text="$1"
     for ((i=0; i<${#text}; i++)); do
@@ -22,26 +20,29 @@ animate_text_x2() {
 auto_select_model() {
     AVAILABLE_MEM=$(( $(sysctl -n hw.memsize) / 1024 / 1024 / 1024 ))
     animate_text "    ↳ System analysis: ${AVAILABLE_MEM}GB ${MEMORY_TYPE} detected."
-    if [ $AVAILABLE_MEM -ge 32 ]; then
+    if [ $AVAILABLE_MEM -ge 30 ]; then
         animate_text "    🜲 Recommending: ⬢ 3 Qwen3 for problem solving & logical reasoning"
         LLM_HF_REPO="unsloth/Qwen3-30B-A3B-GGUF"
         LLM_HF_MODEL_NAME="Qwen3-30B-A3B-Q4_K_M.gguf"
         NODE_NAME="Qwen3 30B A3B Q4"
-    elif [ $AVAILABLE_MEM -ge 24 ]; then
-        animate_text "    🜲 Recommending: ⬢ 8 Phi-4 reasoning for high-precision logical analysis"
-        LLM_HF_REPO="unsloth/Phi-4-reasoning-GGUF"
-        LLM_HF_MODEL_NAME="phi-4-reasoning-Q4_K_M.gguf"
-        NODE_NAME="Phi-4 reasoning Q4"
-    elif [ $AVAILABLE_MEM -ge 12 ]; then
+    elif [ $AVAILABLE_MEM -ge 22 ]; then
+        animate_text "    🜲 Recommending: ⬢ 8 Qwen3 14B for high-precision logical analysis"
+        LLM_HF_REPO="unsloth/Qwen3-14B-GGUF"
+        LLM_HF_MODEL_NAME="Qwen3-14B-Q4_K_M.gguf"
+        NODE_NAME="Qwen3 14B Q4"
+    elif [ $AVAILABLE_MEM -ge 15 ]; then
         animate_text "    🜲 Recommending: ⬢ 7 Qwen3 8B for balanced capability"
         LLM_HF_REPO="unsloth/Qwen3-8B-GGUF"
         LLM_HF_MODEL_NAME="Qwen3-8B-Q4_K_M.gguf"
         NODE_NAME="Qwen3 8B Q4"
-    else
+    elif [ $AVAILABLE_MEM -ge 8 ]; then
         animate_text "    🜲 Recommending: ✶ 16 Custom Import Qwen 3 optimized for efficiency"
         LLM_HF_REPO="unsloth/Qwen3-1.7B-GGUF"
         LLM_HF_MODEL_NAME="Qwen3-1.7B-Q4_K_M.gguf"
         NODE_NAME="Qwen 3 1.7B Q4"
+    else
+        echo "    ✕ ERROR: Insufficient memory. Your system's available Unified Memory does not meet the minimum requirements to run this node. Please check the hardware requirements in our documentation: https://docs.fortytwo.network/docs/hardware-requirements"
+        exit 1
     fi
 }
 
@@ -71,6 +72,15 @@ BANNER_FULLNAME="
 animate_text_x2 "$BANNER"
 animate_text "      Welcome to ::|| Fortytwo, Noderunner."
 echo
+if [ "$(uname -m)" != "arm64" ]; then
+    echo "    ✕ ERROR: Unsupported Mac architecture detected. This node application requires a Mac with Apple Silicon (M1 chip or later). Intel-based Macs are not supported. Please refer to our hardware requirements for more details: https://docs.fortytwo.network/docs/hardware-requirements"
+    exit 1
+fi
+if [ $(( $(sysctl -n hw.memsize) / 1024 / 1024 / 1024 )) -lt 7 ]; then
+    echo "    ✕ ERROR: Insufficient memory. Your system's available Unified Memory does not meet the minimum requirements to run this node. Please check the hardware requirements in our documentation: https://docs.fortytwo.network/docs/hardware-requirements"
+    exit 1
+fi
+MEMORY_TYPE="RAM"
 PROJECT_DIR="./FortytwoNode"
 PROJECT_DEBUG_DIR="$PROJECT_DIR/debug"
 PROJECT_MODEL_CACHE_DIR="$PROJECT_DIR/model_cache"
@@ -339,7 +349,7 @@ echo "╔═══════════════════════�
 animate_text_x2 "║ 7 ⬢ GENERAL KNOWLEDGE                             Qwen3 8B Q4 • 5.1GB ${MEMORY_TYPE} ║"
 echo "║     Versatile multi-domain intelligence core with balanced capabilities.  ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 8 ⬢ ADVANCED REASONING                 Phi-4 14B reasoning Q4 • 9.1GB ${MEMORY_TYPE} ║"
+animate_text_x2 "║ 8 ⬢ ADVANCED REASONING                           Qwen3 14B Q4 • 9.1GB ${MEMORY_TYPE} ║"
 echo "║     High-precision logical analysis matrix optimized for problem-solving. ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
 animate_text_x2 "║ 9 ⬢ PROGRAMMING & TECHNICAL                  DeepCoder 14B Q4 • 9.1GB ${MEMORY_TYPE} ║"
@@ -353,7 +363,7 @@ animate_text_x2 "║ 11 ⬢ MATHEMATICAL INTELLIGENCE       OpenMath-Nemotron 14
 echo "║     Optimized for symbolic reasoning, step-by-step math solutions         ║"
 echo "║     and logic-based inference.                                            ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 12 ⬢ THEOREM PROVER                 DeepSeek-Prover V2 7B Q4 • 4.3GB ${MEMORY_TYPE} ║"
+animate_text_x2 "║ 12 ⬢ THEOREM PROVER                  DeepSeek-Prover V2 7B Q4 • 4.3GB ${MEMORY_TYPE} ║"
 echo "║     Expert in formal logic and proof solving,                             ║"
 echo "║     perfect for mathematics, theorem work, and structured reasoning tasks.║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
@@ -421,9 +431,9 @@ case $NODE_CLASS in
         NODE_NAME="⬢ GENERAL KNOWLEDGE: Qwen3 8B Q4"
         ;;
     8)
-        LLM_HF_REPO="unsloth/Phi-4-reasoning-GGUF"
-        LLM_HF_MODEL_NAME="phi-4-reasoning-Q4_K_M.gguf"
-        NODE_NAME="⬢ ADVANCED REASONING: Phi-4 14B reasoning Q4"
+        LLM_HF_REPO="unsloth/Qwen3-14B-GGUF"
+        LLM_HF_MODEL_NAME="Qwen3-14B-Q4_K_M.gguf"
+        NODE_NAME="⬢ ADVANCED REASONING: Qwen3 14B Q4"
         ;;
     9)
         LLM_HF_REPO="bartowski/agentica-org_DeepCoder-14B-Preview-GGUF"
