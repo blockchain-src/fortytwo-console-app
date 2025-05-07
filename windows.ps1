@@ -48,34 +48,33 @@ function Auto-Select-Model {
 
     if (Get-Command nvidia-smi -ErrorAction SilentlyContinue) {
         $AVAILABLE_MEM = ((nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits | Select-Object -First 1) -as [double]) / 1024
-        Animate-Text "    $SYMBOL_NEWLINE System analysis: $AVAILABLE_MEM GB VRAM detected"
     } else {
         $TotalMemoryKB = [double]((Get-CimInstance Win32_OperatingSystem).TotalVisibleMemorySize)
         $AVAILABLE_MEM = $TotalMemoryKB / 1024 / 1024
-        Animate-Text "    $SYMBOL_NEWLINE System analysis: $AVAILABLE_MEM GB RAM detected"
     }
+    Animate-Text "    $SYMBOL_NEWLINE System analysis: $AVAILABLE_MEM GB $MEMORY_TYPE detected"
 
     $AVAILABLE_MEM_INT = [math]::Round($AVAILABLE_MEM)
-    if ($AVAILABLE_MEM_INT -ge 32) {
-        Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_SELECTED 7 Qwen2.5-Coder for problem solving & logical reasoning"
-        $global:LLM_HF_REPO = "Qwen/Qwen2.5-Coder-32B-Instruct-GGUF"
-        $global:LLM_HF_MODEL_NAME = "qwen2.5-coder-32b-instruct-q4_k_m-00001-of-00003.gguf"
-        $global:NODE_NAME = "Qwen2.5-Coder 32B Instruct Q4_K_M"
-    } elseif ($AVAILABLE_MEM_INT -ge 24) {
-        Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_SELECTED 8 Phi-4 for mathematical intelligence"
-        $global:LLM_HF_REPO = "unsloth/phi-4-GGUF"
-        $global:LLM_HF_MODEL_NAME = "phi-4-Q4_K_M.gguf"
-        $global:NODE_NAME = "Phi-4 Q4_K_M"
-    } elseif ($AVAILABLE_MEM_INT -ge 12) {
-        Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_SELECTED 2 Llama 3.2 for balanced capability"
-        $global:LLM_HF_REPO = "bartowski/Llama-3.2-3B-Instruct-GGUF"
-        $global:LLM_HF_MODEL_NAME = "Llama-3.2-3B-Instruct-Q4_K_M.gguf"
-        $global:NODE_NAME = "Llama 3.2 3B Instruct Q4_K_M"
+    if ($AVAILABLE_MEM_INT -ge 22) {
+        Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_SELECTED 3 Qwen3 for problem solving & logical reasoning"
+        $global:LLM_HF_REPO = "unsloth/Qwen3-30B-A3B-GGUF"
+        $global:LLM_HF_MODEL_NAME = "Qwen3-30B-A3B-Q4_K_M.gguf"
+        $global:NODE_NAME = "Qwen3 30B A3B Q4"
+    } elseif ($AVAILABLE_MEM_INT -ge 15) {
+        Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_SELECTED 8 Qwen3 14B for high-precision logical analysis"
+        $global:LLM_HF_REPO = "unsloth/Qwen3-14B-GGUF"
+        $global:LLM_HF_MODEL_NAME = "Qwen3-14B-Q4_K_M.gguf"
+        $global:NODE_NAME = "Qwen3 14B Q4"
+    } elseif ($AVAILABLE_MEM_INT -ge 7) {
+        Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_SELECTED 7 Qwen3 8B for balanced capability"
+        $global:LLM_HF_REPO = "unsloth/Qwen3-8B-GGUF"
+        $global:LLM_HF_MODEL_NAME = "Qwen3-8B-Q4_K_M.gguf"
+        $global:NODE_NAME = "Qwen3 8B Q4"
     } else {
-        Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_CUSTOM 1 Custom Import Qwen 2.5 optimized for efficiency"
-        $global:LLM_HF_REPO = "Qwen/Qwen2.5-1.5B-Instruct-GGUF"
-        $global:LLM_HF_MODEL_NAME = "qwen2.5-1.5b-instruct-q4_k_m.gguf"
-        $global:NODE_NAME = "Qwen 2.5 1.5B Instruct Q4_K_M"
+        Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_SELECTED 16 Qwen 3 7.1B optimized for efficiency"
+        $global:LLM_HF_REPO = "unsloth/Qwen3-1.7B-GGUF"
+        $global:LLM_HF_MODEL_NAME = "Qwen3-1.7B-Q4_K_M.gguf"
+        $global:NODE_NAME = "Qwen 3 1.7B Q4"
     }
 }
 
@@ -83,6 +82,13 @@ Write-Host ""
 Animate-Text-x2 ($BANNER -join '')
 Animate-Text "      Welcome to ::|| Fortytwo, Noderunner."
 Write-Host ""
+if (Get-Command "nvidia-smi.exe" -ErrorAction SilentlyContinue) {
+    $MEMORY_TYPE="VRAM"
+} else {
+    $MEMORY_TYPE=" RAM"
+    Write-Output "    $SYMBOL_STATE_FAILURE ERROR: No compatible GPU found. This node application requires a GPU, but only a CPU was detected. Please ensure your system meets the minimum GPU requirements by reviewing our documentation: https://docs.fortytwo.network/docs/hardware-requirements"
+    exit 1
+}
 
 $PROJECT_DIR = "FortytwoNode"
 $PROJECT_DEBUG_DIR = "$PROJECT_DIR\debug"
@@ -142,7 +148,7 @@ function Cleanup {
 
 Animate-Text ($SYMBOL_HEADER_IN -join ''),"Checking for the Latest Components Versions",($SYMBOL_HEADER_OUT -join '')
 Write-Host ""
-Animate-Text " $SYMBOL_COMP_SETUPSCRIPT Setup script"
+Animate-Text " $SYMBOL_COMP_SETUPSCRIPT Setup script - version validation"
 
 # --- Update setup script ---
 $UpdateUrl = "https://raw.githubusercontent.com/Fortytwo-Network/fortytwo-console-app/main/windows.ps1"
@@ -291,7 +297,7 @@ if (Test-Path $ACCOUNT_PRIVATE_KEY_FILE) {
     Write-Host "|  Each node requires a secure blockchain identity.       |"
     Write-Host "|  Select one of the following options:                   |"
     Write-Host "|                                                         |"
-    Write-Host "|  1. Create a new identity with an invite code.          |"
+    Write-Host "|  1. Create a new identity with an activation code.      |"
     Write-Host "|     Recommended for new nodes.                          |"
     Write-Host "|                                                         |"
     Write-Host "|  2. Recover an existing identity with recovery phrase.  |"
@@ -330,13 +336,13 @@ if (Test-Path $ACCOUNT_PRIVATE_KEY_FILE) {
             }
         }
     } else {
-        Animate-Text "[1] Creating a new identity with an invite code"
+        Animate-Text "[1] Creating a new identity with an activation code"
         Write-Host ""
         while ($true) {
-            $INVITE_CODE = Read-Host "Enter your invite code"
+            $INVITE_CODE = Read-Host "Enter your activation code"
             Write-Host ""
             if (-not $INVITE_CODE -or $INVITE_CODE.Length -lt 12) {
-                Write-Host " ",($SYMBOL_STATE_SADFACE -join ''),"Invalid invite code. Check the code and try again."
+                Write-Host " ",($SYMBOL_STATE_SADFACE -join ''),"Invalid activation code. Check the code and try again."
                 Write-Host ""
                 continue
             } else {
@@ -394,48 +400,74 @@ Write-Host ""
 Auto-Select-Model
 # Write-Host "    Already downloaded models: $SYMBOL_MODEL_SELECTED 4, $SYMBOL_MODEL_SELECTED 5"
 Write-Host ""
-Write-Host "|===========================================================================|"
-Animate-Text-x2 "| 0 $SYMBOL_MODEL_AUTOSELECT AUTO-SELECT - Optimal configuration                                   |"
-Write-Host "|     Let the system determine the best model for your hardware.            |"
-Write-Host "|     Balanced for performance and capabilities.                            |"
-Write-Host "|===========================================================================|"
-Animate-Text-x2 "| 1 $SYMBOL_MODEL_CUSTOM IMPORT CUSTOM - Advanced configuration                                |"
-# Write-Host "|===========================================================================|"
-# Write-Host "| 2 $SYMBOL_MODEL_LASTUSED LAST USED - Run the model that was run the last time                  |"
-Write-Host "|===========================================================================|"
-Animate-Text-x2 "| 2 $SYMBOL_MODEL_SELECTED GENERAL KNOWLEDGE                   Llama 3.2 3B Instruct $SYMBOL_SEPARATOR_DOT 2.2GB RAM |"
-Write-Host "|     Versatile multi-domain intelligence core with balanced capabilities.  |"
-Write-Host "|===========================================================================|"
-Animate-Text-x2 "| 3 $SYMBOL_MODEL_SELECTED ADVANCED REASONING                   INTELLECT-1 Instruct $SYMBOL_SEPARATOR_DOT 6.5GB RAM |"
-Write-Host "|     High-precision logical analysis matrix optimized for problem-solving. |"
-Write-Host "|===========================================================================|"
-Animate-Text-x2 "| 4 $SYMBOL_MODEL_SELECTED PROGRAMMING & TECHNICAL         Qwen2.5 Coder 7B Instruct $SYMBOL_SEPARATOR_DOT 4.8GB RAM |"
-Write-Host "|     Specialized system for code synthesis and framework construction.     |"
-Write-Host "|===========================================================================|"
-Animate-Text-x2 "| 5 $SYMBOL_MODEL_SELECTED ACADEMIC KNOWLEDGE             Ministral 8B Instruct 2410 $SYMBOL_SEPARATOR_DOT 5.2GB RAM |"
-Write-Host "|     Advanced data integration and research synthesis protocol.            |"
-Write-Host "|===========================================================================|"
-Animate-Text-x2 "| 6 $SYMBOL_MODEL_SELECTED LANGUAGE & WRITING                    Qwen2.5 7B Instruct $SYMBOL_SEPARATOR_DOT 4.8GB RAM |"
-Write-Host "|     Enhanced natural language and communication protocol interface.       |"
-Write-Host "|===========================================================================|"
-Animate-Text-x2 "| 7 $SYMBOL_MODEL_SELECTED LOGICAL REASONING               Qwen2.5-Coder 32B Instruct $SYMBOL_SEPARATOR_DOT 21GB RAM |"
-Write-Host "|     High-level reasoning, mathematical problem-solving                    |"
-Write-Host "|     and competitive coding.                                               |"
-Write-Host "|===========================================================================|"
-Animate-Text-x2 "| 8 $SYMBOL_MODEL_SELECTED MATHEMATICAL INTELLIGENCE                       Phi-4 14B $SYMBOL_SEPARATOR_DOT 9.1GB RAM |"
-Write-Host "|     Optimized for symbolic reasoning, step-by-step math solutions         |"
-Write-Host "|     and logic-based inference.                                            |"
-Write-Host "|===========================================================================|"
-Animate-Text-x2 "| 9 $SYMBOL_MODEL_SELECTED MULTILINGUAL UNDERSTANDING                     Gemma-3 4B $SYMBOL_SEPARATOR_DOT 3.3GB RAM |"
-Write-Host "|     Balanced intelligence with high-quality cross-lingual comprehension,  |"
-Write-Host "|     translation and multilingual reasoning.                               |"
-Write-Host "|===========================================================================|"
-Animate-Text-x2 "| 10 $SYMBOL_MODEL_SELECTED COMPETITIVE PROGRAMMING & ALGORITHMS     OlympicCoder 7B $SYMBOL_SEPARATOR_DOT 4.8GB RAM |"
-Write-Host "|     Optimized for competitive coding, excelling in algorithmic challenges |"
-Write-Host "|     and CodeForces-style programming tasks.                               |"
-Write-Host "|===========================================================================|"
+Write-Host "|============================================================================|"
+Animate-Text-x2 "| 0 $SYMBOL_MODEL_AUTOSELECT AUTO-SELECT - Optimal configuration                                    |"
+Write-Host "|     Let the system determine the best model for your hardware.             |"
+Write-Host "|     Balanced for performance and capabilities.                             |"
+Write-Host "|============================================================================|"
+Animate-Text-x2 "| 1 $SYMBOL_MODEL_CUSTOM IMPORT CUSTOM - Advanced configuration                                 |"
+# Animate-Text-x2 "| 2 $SYMBOL_MODEL_LASTUSED LAST USED - Run the model that was run the last time                  |"
+Write-Host "|============================================================================|"
+Write-Host "                HEAVY TIER | Dedicating all Compute to the Node              "
+Write-Host "|============================================================================|"
+Animate-Text-x2 "| 2 $SYMBOL_MODEL_SELECTED GENERAL KNOWLEDGE                           Qwen3 32B Q4 $SYMBOL_SEPARATOR_DOT 19.8GB $MEMORY_TYPE |"
+Write-Host "|     Versatile multi-domain intelligence core with balanced capabilities.   |"
+Write-Host "|============================================================================|"
+Animate-Text-x2 "| 3 $SYMBOL_MODEL_SELECTED ADVANCED REASONING                      Qwen3 30B A3B Q4 $SYMBOL_SEPARATOR_DOT 18.6GB $MEMORY_TYPE |"
+Write-Host "|     High-precision logical analysis matrix optimized for problem-solving.  |"
+Write-Host "|============================================================================|"
+Animate-Text-x2 "| 4 $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS             OlympicCoder 32B Q4 $SYMBOL_SEPARATOR_DOT 19.9GB $MEMORY_TYPE |"
+Write-Host "|     Optimized for symbolic reasoning, step-by-step math solutions          |"
+Write-Host "|     and logic-based inference.                                             |"
+Write-Host "|============================================================================|"
+Animate-Text-x2 "| 5 $SYMBOL_MODEL_SELECTED COMPLEX RESEARCH                         GLM-4-Z1 32B Q4 $SYMBOL_SEPARATOR_DOT 19.7GB $MEMORY_TYPE |"
+Write-Host "|     Enhanced for deep reasoning, excels in mathematics,                    |"
+Write-Host "|     logic, and code generation, rivaling larger models in complex tasks.   |"
+Write-Host "|============================================================================|"
+Animate-Text-x2 "| 6 $SYMBOL_MODEL_SELECTED ACADEMIC KNOWLEDGE     Llama-4 Scout 17B 16E Instruct Q4 $SYMBOL_SEPARATOR_DOT 65.4GB $MEMORY_TYPE |"
+Write-Host "|     Advanced data integration and research synthesis protocol.             |"
+Write-Host "|============================================================================|"
+Write-Host "                 LIGHT TIER | Operating the Node in Background                "
+Write-Host "|============================================================================|"
+Animate-Text-x2 "| 7 $SYMBOL_MODEL_SELECTED GENERAL KNOWLEDGE                             Qwen3 8B Q4 $SYMBOL_SEPARATOR_DOT 5.1GB $MEMORY_TYPE |"
+Write-Host "|     Versatile multi-domain intelligence core with balanced capabilities.   |"
+Write-Host "|============================================================================|"
+Animate-Text-x2 "| 8 $SYMBOL_MODEL_SELECTED ADVANCED REASONING                           Qwen3 14B Q4 $SYMBOL_SEPARATOR_DOT 9.1GB $MEMORY_TYPE |"
+Write-Host "|     High-precision logical analysis matrix optimized for problem-solving.  |"
+Write-Host "|============================================================================|"
+Animate-Text-x2 "| 9 $SYMBOL_MODEL_SELECTED PROGRAMMING & TECHNICAL                  DeepCoder 14B Q4 $SYMBOL_SEPARATOR_DOT 9.1GB $MEMORY_TYPE |"
+Write-Host "|     Specialized system for code synthesis and framework construction.      |"
+Write-Host "|============================================================================|"
+Animate-Text-x2 "| 10 $SYMBOL_MODEL_SELECTED MATH & CODE                                MiMo 7B RL Q4 $SYMBOL_SEPARATOR_DOT 5.1GB $MEMORY_TYPE |"
+Write-Host "|     Solves math and logic problems effectively,                            |"
+Write-Host "|     with strong performance in structured reasoning and code tasks.        |"
+Write-Host "|============================================================================|"
+Animate-Text-x2 "| 11 $SYMBOL_MODEL_SELECTED MATHEMATICAL INTELLIGENCE       OpenMath-Nemotron 14B Q4 $SYMBOL_SEPARATOR_DOT 9.1GB $MEMORY_TYPE |"
+Write-Host "|     Optimized for symbolic reasoning, step-by-step math solutions          |"
+Write-Host "|     and logic-based inference.                                             |"
+Write-Host "|============================================================================|"
+Animate-Text-x2 "| 12 $SYMBOL_MODEL_SELECTED THEOREM PROVER                  DeepSeek-Prover V2 7B Q4 $SYMBOL_SEPARATOR_DOT 4.3GB $MEMORY_TYPE |"
+Write-Host "|     Expert in formal logic and proof solving,                              |"
+Write-Host "|     perfect for mathematics, theorem work, and structured reasoning tasks. |"
+Write-Host "|============================================================================|"
+Animate-Text-x2 "| 13 $SYMBOL_MODEL_SELECTED MULTILINGUAL UNDERSTANDING                 Gemma-3 4B Q4 $SYMBOL_SEPARATOR_DOT 2.6GB $MEMORY_TYPE |"
+Write-Host "|     Balanced intelligence with high-quality cross-lingual comprehension,   |"
+Write-Host "|     translation and multilingual reasoning.                                |"
+Write-Host "|============================================================================|"
+Animate-Text-x2 "| 14 $SYMBOL_MODEL_SELECTED RUST PROGRAMMING                     Tessa-Rust-T1 7B Q6 $SYMBOL_SEPARATOR_DOT 6.3GB $MEMORY_TYPE |"
+Write-Host "|     Focused on Rust programming, offering high-quality code generation.    |"
+Write-Host "|============================================================================|"
+Animate-Text-x2 "| 15 $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS              OlympicCoder 7B Q6 $SYMBOL_SEPARATOR_DOT 6.3GB $MEMORY_TYPE |"
+Write-Host "|     Optimized for symbolic reasoning, step-by-step math solutions          |"
+Write-Host "|     and logic-based inference.                                             |"
+Write-Host "|============================================================================|"
+Animate-Text-x2 "| 16 $SYMBOL_MODEL_SELECTED LOW MEMORY MODEL                           Qwen3 1.7B Q4 $SYMBOL_SEPARATOR_DOT 1.2GB $MEMORY_TYPE |"
+Write-Host "|     Ultra-efficient for resource-constrained environments,                 |"
+Write-Host "|     providing basic instruction-following and reasoning functionalities.   |"
+Write-Host "|============================================================================|"
 Write-Host ""
-$NODE_CLASS = Read-Host "Select your node's specialization [0-10] (0 for auto-select)"
+
+$NODE_CLASS = Read-Host "Select your node's specialization [0-16] (0 for auto-select)"
 
 switch ($NODE_CLASS) {
     "0" {
@@ -451,49 +483,79 @@ switch ($NODE_CLASS) {
         $NODE_NAME = " $SYMBOL_MODEL_CUSTOM CUSTOM IMPORT: HuggingFace $($LLM_HF_REPO -split '/' | Select-Object -Last 1))"
     }
     "2" {
-        $LLM_HF_REPO = "bartowski/Llama-3.2-3B-Instruct-GGUF"
-        $LLM_HF_MODEL_NAME = "Llama-3.2-3B-Instruct-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED GENERAL KNOWLEDGE: Llama 3.2 3B Instruct Q4_K_M"
+        $LLM_HF_REPO = "unsloth/Qwen3-32B-GGUF"
+        $LLM_HF_MODEL_NAME = "Qwen3-32B-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED GENERAL KNOWLEDGE: Qwen3 32B Q4"
     }
     "3" {
-        $LLM_HF_REPO = "bartowski/INTELLECT-1-Instruct-GGUF"
-        $LLM_HF_MODEL_NAME = "INTELLECT-1-Instruct-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED ADVANCED REASONING: INTELLECT-1 Instruct Q4_K_M"
+        $LLM_HF_REPO = "unsloth/Qwen3-30B-A3B-GGUF"
+        $LLM_HF_MODEL_NAME = "Qwen3-30B-A3B-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED ADVANCED REASONING: Qwen3 30B A3B Q4"
     }
     "4" {
-        $LLM_HF_REPO = "Qwen/Qwen2.5-Coder-7B-Instruct-GGUF"
-        $LLM_HF_MODEL_NAME = "qwen2.5-coder-7b-instruct-q4_k_m-00001-of-00002.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED PROGRAMMING & TECHNICAL: Qwen2.5 Coder 7B Instruct Q4_K_M"
+        $LLM_HF_REPO = "bartowski/open-r1_OlympicCoder-32B-GGUF"
+        $LLM_HF_MODEL_NAME = "open-r1_OlympicCoder-32B-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS: OlympicCoder 32B Q4"
     }
     "5" {
-        $LLM_HF_REPO = "bartowski/Ministral-8B-Instruct-2410-GGUF"
-        $LLM_HF_MODEL_NAME = "Ministral-8B-Instruct-2410-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED ACADEMIC KNOWLEDGE: Ministral 8B Instruct 2410 Q4_K_M"
+        $LLM_HF_REPO = "bartowski/THUDM_GLM-Z1-32B-0414-GGUF"
+        $LLM_HF_MODEL_NAME = "THUDM_GLM-Z1-32B-0414-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED COMPLEX RESEARCH: GLM-4-Z1 32B Q4"
     }
     "6" {
-        $LLM_HF_REPO = "Qwen/Qwen2.5-7B-Instruct-GGUF"
-        $LLM_HF_MODEL_NAME = "qwen2.5-7b-instruct-q4_k_m-00001-of-00002.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED LANGUAGE & WRITING: Qwen2.5 7B Instruct Q4_K_M"
+        $LLM_HF_REPO = "unsloth/Llama-4-Scout-17B-16E-Instruct-GGUF"
+        $LLM_HF_MODEL_NAME = "Llama-4-Scout-17B-16E-Instruct-Q4_K_M-00001-of-00002.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED ACADEMIC KNOWLEDGE: Llama-4 Scout 17B 16E Instruct Q4"
     }
     "7" {
-        $LLM_HF_REPO = "Qwen/Qwen2.5-Coder-32B-Instruct-GGUF"
-        $LLM_HF_MODEL_NAME = "qwen2.5-coder-32b-instruct-q4_k_m-00001-of-00003.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED LOGICAL REASONING: Qwen2.5-Coder 32B Instruct Q4_K_M"
+        $LLM_HF_REPO = "unsloth/Qwen3-8B-GGUF"
+        $LLM_HF_MODEL_NAME = "Qwen3-8B-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED GENERAL KNOWLEDGE: Qwen3 8B Q4"
     }
     "8" {
-        $LLM_HF_REPO = "unsloth/phi-4-GGUF"
-        $LLM_HF_MODEL_NAME = "phi-4-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED MATHEMATICAL INTELLIGENCE: Phi-4 14B Q4_K_M"
+        $LLM_HF_REPO = "unsloth/Qwen3-14B-GGUF"
+        $LLM_HF_MODEL_NAME = "Qwen3-14B-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED ADVANCED REASONING: Qwen3 14B Q4"
     }
     "9" {
-        $LLM_HF_REPO = "unsloth/gemma-3-12b-it-GGUF"
-        $LLM_HF_MODEL_NAME = "gemma-3-12b-it-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED MULTILINGUAL UNDERSTANDING: Gemma-3 4B Q4_K_M"
+        $LLM_HF_REPO = "bartowski/agentica-org_DeepCoder-14B-Preview-GGUF"
+        $LLM_HF_MODEL_NAME = "agentica-org_DeepCoder-14B-Preview-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED PROGRAMMING & TECHNICAL: DeepCoder 14B Q4"
     }
     "10" {
+        $LLM_HF_REPO = "jedisct1/MiMo-7B-RL-GGUF"
+        $LLM_HF_MODEL_NAME = "MiMo-7B-RL-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED MATH & CODE: MiMo 7B RL Q4"
+    }
+    "11" {
+        $LLM_HF_REPO = "bartowski/nvidia_OpenMath-Nemotron-14B-GGUF"
+        $LLM_HF_MODEL_NAME = "nvidia_OpenMath-Nemotron-14B-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED MATHEMATICAL INTELLIGENCE: OpenMath-Nemotron 14B Q4"
+    }
+    "12" {
+        $LLM_HF_REPO = "irmma/DeepSeek-Prover-V2-7B-Q4_K_M-GGUF"
+        $LLM_HF_MODEL_NAME = "deepseek-prover-v2-7b-q4_k_m-imat.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED THEOREM PROVER: DeepSeek-Prover V2 7B Q4"
+    }
+    "13" {
+        $LLM_HF_REPO = "unsloth/gemma-3-4b-it-GGUF"
+        $LLM_HF_MODEL_NAME = "gemma-3-4b-it-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED MULTILINGUAL UNDERSTANDING: Gemma-3 4B Q4"
+    }
+    "14" {
+        $LLM_HF_REPO = "bartowski/Tesslate_Tessa-Rust-T1-7B-GGUF"
+        $LLM_HF_MODEL_NAME = "Tesslate_Tessa-Rust-T1-7B-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED RUST PROGRAMMING: Tessa-Rust-T1 7B Q6"
+    }
+    "15" {
         $LLM_HF_REPO = "bartowski/open-r1_OlympicCoder-7B-GGUF"
         $LLM_HF_MODEL_NAME = "open-r1_OlympicCoder-7B-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED COMPETITIVE PROGRAMMING & ALGORITHMS: OlympicCoder 7B Q4_K_M"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS: OlympicCoder 7B Q6"
+    }
+    "16" {
+        $LLM_HF_REPO = "unsloth/Qwen3-1.7B-GGUF"
+        $LLM_HF_MODEL_NAME = "Qwen3-1.7B-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED LOW MEMORY MODEL: Qwen3 1.7B Q4"
     }
 
     Default {
