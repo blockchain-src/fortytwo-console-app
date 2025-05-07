@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if command -v nvidia-smi &> /dev/null; then
+    MEMORY_TYPE="VRAM"
+else
+    MEMORY_TYPE=" RAM"
+fi
+
 animate_text() {
     local text="$1"
     for ((i=0; i<${#text}; i++)); do
@@ -20,11 +26,10 @@ animate_text_x2() {
 auto_select_model() {
     if command -v nvidia-smi &> /dev/null; then
         AVAILABLE_MEM=$(nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits | head -n 1 | awk '{print $1 / 1024}')
-        animate_text "    ↳ System analysis: ${AVAILABLE_MEM}GB VRAM detected"
     else
         AVAILABLE_MEM=$(awk '/MemTotal/ {print $2 / 1024 / 1024}' /proc/meminfo)
-        animate_text "    ↳ System analysis: ${AVAILABLE_MEM}GB RAM detected"
     fi
+    animate_text "    ↳ System analysis: ${AVAILABLE_MEM}GB ${MEMORY_TYPE} detected"
 
     AVAILABLE_MEM_INT=$(printf "%.0f" "$AVAILABLE_MEM")
 
@@ -339,49 +344,49 @@ echo "╚═══════════════════════�
 #animate_text_x2 "║ 2 ↺ LAST USED - Run the model that was run the last time                  ║"
 echo "               HEAVY TIER | Dedicating all Compute to the Node               "
 echo "╔═══════════════════════════════════════════════════════════════════════════╗"
-animate_text_x2 "║ 2 ⬢ GENERAL KNOWLEDGE                           Qwen3 32B Q4 • 19.8GB RAM ║"
+animate_text_x2 "║ 2 ⬢ GENERAL KNOWLEDGE                          Qwen3 32B Q4 • 19.8GB ${MEMORY_TYPE} ║"
 echo "║     Versatile multi-domain intelligence core with balanced capabilities.  ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 3 ⬢ ADVANCED REASONING                      Qwen3 30B A3B Q4 • 18.6GB RAM ║"
+animate_text_x2 "║ 3 ⬢ ADVANCED REASONING                     Qwen3 30B A3B Q4 • 18.6GB ${MEMORY_TYPE} ║"
 echo "║     High-precision logical analysis matrix optimized for problem-solving. ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 4 ⬢ PROGRAMMING & ALGORITHMS             OlympicCoder 32B Q4 • 19.9GB RAM ║"
+animate_text_x2 "║ 4 ⬢ PROGRAMMING & ALGORITHMS            OlympicCoder 32B Q4 • 19.9GB ${MEMORY_TYPE} ║"
 echo "║     Optimized for symbolic reasoning, step-by-step math solutions         ║"
 echo "║     and logic-based inference.                                            ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 5 ⬢ COMPLEX RESEARCH                         GLM-4-Z1 32B Q4 • 19.7GB RAM ║"
+animate_text_x2 "║ 5 ⬢ COMPLEX RESEARCH                        GLM-4-Z1 32B Q4 • 19.7GB ${MEMORY_TYPE} ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 6 ⬢ ACADEMIC KNOWLEDGE     Llama-4 Scout 17B 16E Instruct Q4 • 65.4GB RAM ║"
+animate_text_x2 "║ 6 ⬢ ACADEMIC KNOWLEDGE    Llama-4 Scout 17B 16E Instruct Q4 • 65.4GB ${MEMORY_TYPE} ║"
 echo "║     Advanced data integration and research synthesis protocol.            ║"
 echo "╚═══════════════════════════════════════════════════════════════════════════╝"
 echo "                LIGHT TIER | Operating the Node in Background                "
 echo "╔═══════════════════════════════════════════════════════════════════════════╗"
-animate_text_x2 "║ 7 ⬢ GENERAL KNOWLEDGE                             Qwen3 8B Q4 • 5.1GB RAM ║"
+animate_text_x2 "║ 7 ⬢ GENERAL KNOWLEDGE                            Qwen3 8B Q4 • 5.1GB ${MEMORY_TYPE} ║"
 echo "║     Versatile multi-domain intelligence core with balanced capabilities.  ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 8 ⬢ ADVANCED REASONING                 Phi-4 14B reasoning Q4 • 9.1GB RAM ║"
+animate_text_x2 "║ 8 ⬢ ADVANCED REASONING                Phi-4 14B reasoning Q4 • 9.1GB ${MEMORY_TYPE} ║"
 echo "║     High-precision logical analysis matrix optimized for problem-solving. ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 9 ⬢ PROGRAMMING & TECHNICAL                  DeepCoder 14B Q4 • 9.1GB RAM ║"
+animate_text_x2 "║ 9 ⬢ PROGRAMMING & TECHNICAL                 DeepCoder 14B Q4 • 9.1GB ${MEMORY_TYPE} ║"
 echo "║     Specialized system for code synthesis and framework construction.     ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 10 ⬢ LONG CONTEXT MODEL          Llama-3.1 8B UltraLong 4M Q4 • 5.1GB RAM ║"
+animate_text_x2 "║ 10 ⬢ MATH & CODE                               MiMo 7B RL Q4 • 5.1GB ${MEMORY_TYPE} ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 11 ⬢ MATHEMATICAL INTELLIGENCE       OpenMath-Nemotron 14B Q4 • 9.1GB RAM ║"
+animate_text_x2 "║ 11 ⬢ MATHEMATICAL INTELLIGENCE      OpenMath-Nemotron 14B Q4 • 9.1GB ${MEMORY_TYPE} ║"
 echo "║     Optimized for symbolic reasoning, step-by-step math solutions         ║"
 echo "║     and logic-based inference.                                            ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 12 ⬢ MULTILINGUAL UNDERSTANDING                 Gemma-3 4B Q4 • 2.6GB RAM ║"
+animate_text_x2 "║ 12 ⬢ MULTILINGUAL UNDERSTANDING                Gemma-3 4B Q4 • 2.6GB ${MEMORY_TYPE} ║"
 echo "║     Balanced intelligence with high-quality cross-lingual comprehension,  ║"
 echo "║     translation and multilingual reasoning.                               ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 13 ⬢ RUST PROGRAMMING                     Tessa-Rust-T1 7B Q6 • 6.3GB RAM ║"
+animate_text_x2 "║ 13 ⬢ RUST PROGRAMMING                    Tessa-Rust-T1 7B Q6 • 6.3GB ${MEMORY_TYPE} ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 14 ⬢ PROGRAMMING & ALGORITHMS              OlympicCoder 7B Q6 • 6.3GB RAM ║"
+animate_text_x2 "║ 14 ⬢ PROGRAMMING & ALGORITHMS             OlympicCoder 7B Q6 • 6.3GB ${MEMORY_TYPE} ║"
 echo "║     Optimized for symbolic reasoning, step-by-step math solutions         ║"
 echo "║     and logic-based inference.                                            ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 15 ⬢ LOW MEMORY MODEL                           Qwen3 1.7B Q4 • 1.2GB RAM ║"
+animate_text_x2 "║ 15 ⬢ LOW MEMORY MODEL                          Qwen3 1.7B Q4 • 1.2GB ${MEMORY_TYPE} ║"
 echo "╚═══════════════════════════════════════════════════════════════════════════╝"
 echo
 
@@ -442,9 +447,9 @@ case $NODE_CLASS in
         NODE_NAME="⬢ PROGRAMMING & TECHNICAL: DeepCoder 14B Q4"
         ;;
     10)
-        LLM_HF_REPO="bartowski/nvidia_Llama-3.1-8B-UltraLong-4M-Instruct-GGUF"
-        LLM_HF_MODEL_NAME="nvidia_Llama-3.1-8B-UltraLong-4M-Instruct-Q4_K_M.gguf"
-        NODE_NAME="⬢ LONG CONTEXT MODEL: Llama-3.1 8B UltraLong 4M Q4"
+        LLM_HF_REPO="jedisct1/MiMo-7B-RL-GGUF"
+        LLM_HF_MODEL_NAME="MiMo-7B-RL-Q4_K_M.gguf"
+        NODE_NAME="⬢ MATH & CODE: MiMo 7B RL Q4"
         ;;
     11)
         LLM_HF_REPO="bartowski/nvidia_OpenMath-Nemotron-14B-GGUF"

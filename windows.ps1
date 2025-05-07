@@ -1,3 +1,9 @@
+if (Get-Command "nvidia-smi.exe" -ErrorAction SilentlyContinue) {
+    $MEMORY_TYPE="VRAM"
+} else {
+    $MEMORY_TYPE=" RAM"
+}
+
 function Animate-Text {
     param (
         [string]$text
@@ -48,12 +54,11 @@ function Auto-Select-Model {
 
     if (Get-Command nvidia-smi -ErrorAction SilentlyContinue) {
         $AVAILABLE_MEM = ((nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits | Select-Object -First 1) -as [double]) / 1024
-        Animate-Text "    $SYMBOL_NEWLINE System analysis: $AVAILABLE_MEM GB VRAM detected"
     } else {
         $TotalMemoryKB = [double]((Get-CimInstance Win32_OperatingSystem).TotalVisibleMemorySize)
         $AVAILABLE_MEM = $TotalMemoryKB / 1024 / 1024
-        Animate-Text "    $SYMBOL_NEWLINE System analysis: $AVAILABLE_MEM GB RAM detected"
     }
+    Animate-Text "    $SYMBOL_NEWLINE System analysis: $AVAILABLE_MEM GB $MEMORY_TYPE detected"
 
     $AVAILABLE_MEM_INT = [math]::Round($AVAILABLE_MEM)
     if ($AVAILABLE_MEM_INT -ge 32) {
@@ -404,49 +409,49 @@ Animate-Text-x2 "| 1 $SYMBOL_MODEL_CUSTOM IMPORT CUSTOM - Advanced configuration
 Write-Host "|============================================================================|"
 Write-Host "                HEAVY TIER | Dedicating all Compute to the Node              "
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 2 $SYMBOL_MODEL_SELECTED GENERAL KNOWLEDGE                            Qwen3 32B Q4 $SYMBOL_SEPARATOR_DOT 19.8GB RAM |"
+Animate-Text-x2 "| 2 $SYMBOL_MODEL_SELECTED GENERAL KNOWLEDGE                           Qwen3 32B Q4 $SYMBOL_SEPARATOR_DOT 19.8GB $MEMORY_TYPE |"
 Write-Host "|     Versatile multi-domain intelligence core with balanced capabilities.   |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 3 $SYMBOL_MODEL_SELECTED ADVANCED REASONING                       Qwen3 30B A3B Q4 $SYMBOL_SEPARATOR_DOT 18.6GB RAM |"
+Animate-Text-x2 "| 3 $SYMBOL_MODEL_SELECTED ADVANCED REASONING                      Qwen3 30B A3B Q4 $SYMBOL_SEPARATOR_DOT 18.6GB $MEMORY_TYPE |"
 Write-Host "|     High-precision logical analysis matrix optimized for problem-solving.  |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 4 $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS              OlympicCoder 32B Q4 $SYMBOL_SEPARATOR_DOT 19.9GB RAM |"
+Animate-Text-x2 "| 4 $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS             OlympicCoder 32B Q4 $SYMBOL_SEPARATOR_DOT 19.9GB $MEMORY_TYPE |"
 Write-Host "|     Optimized for symbolic reasoning, step-by-step math solutions          |"
 Write-Host "|     and logic-based inference.                                             |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 5 $SYMBOL_MODEL_SELECTED COMPLEX RESEARCH                          GLM-4-Z1 32B Q4 $SYMBOL_SEPARATOR_DOT 19.7GB RAM |"
+Animate-Text-x2 "| 5 $SYMBOL_MODEL_SELECTED COMPLEX RESEARCH                         GLM-4-Z1 32B Q4 $SYMBOL_SEPARATOR_DOT 19.7GB $MEMORY_TYPE |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 6 $SYMBOL_MODEL_SELECTED ACADEMIC KNOWLEDGE      Llama-4 Scout 17B 16E Instruct Q4 $SYMBOL_SEPARATOR_DOT 65.4GB RAM |"
+Animate-Text-x2 "| 6 $SYMBOL_MODEL_SELECTED ACADEMIC KNOWLEDGE     Llama-4 Scout 17B 16E Instruct Q4 $SYMBOL_SEPARATOR_DOT 65.4GB $MEMORY_TYPE |"
 Write-Host "|     Advanced data integration and research synthesis protocol.             |"
 Write-Host "|============================================================================|"
 Write-Host "                 LIGHT TIER | Operating the Node in Background                "
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 7 $SYMBOL_MODEL_SELECTED GENERAL KNOWLEDGE                              Qwen3 8B Q4 $SYMBOL_SEPARATOR_DOT 5.1GB RAM |"
+Animate-Text-x2 "| 7 $SYMBOL_MODEL_SELECTED GENERAL KNOWLEDGE                             Qwen3 8B Q4 $SYMBOL_SEPARATOR_DOT 5.1GB $MEMORY_TYPE |"
 Write-Host "|     Versatile multi-domain intelligence core with balanced capabilities.   |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 8 $SYMBOL_MODEL_SELECTED ADVANCED REASONING                  Phi-4 14B reasoning Q4 $SYMBOL_SEPARATOR_DOT 9.1GB RAM |"
+Animate-Text-x2 "| 8 $SYMBOL_MODEL_SELECTED ADVANCED REASONING                 Phi-4 14B reasoning Q4 $SYMBOL_SEPARATOR_DOT 9.1GB $MEMORY_TYPE |"
 Write-Host "|     High-precision logical analysis matrix optimized for problem-solving.  |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 9 $SYMBOL_MODEL_SELECTED PROGRAMMING & TECHNICAL                   DeepCoder 14B Q4 $SYMBOL_SEPARATOR_DOT 9.1GB RAM |"
+Animate-Text-x2 "| 9 $SYMBOL_MODEL_SELECTED PROGRAMMING & TECHNICAL                  DeepCoder 14B Q4 $SYMBOL_SEPARATOR_DOT 9.1GB $MEMORY_TYPE |"
 Write-Host "|     Specialized system for code synthesis and framework construction.      |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 10 $SYMBOL_MODEL_SELECTED LONG CONTEXT MODEL           Llama-3.1 8B UltraLong 4M Q4 $SYMBOL_SEPARATOR_DOT 5.1GB RAM |"
+Animate-Text-x2 "| 10 $SYMBOL_MODEL_SELECTED MATH & CODE                                MiMo 7B RL Q4 $SYMBOL_SEPARATOR_DOT 5.1GB $MEMORY_TYPE |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 11 $SYMBOL_MODEL_SELECTED MATHEMATICAL INTELLIGENCE        OpenMath-Nemotron 14B Q4 $SYMBOL_SEPARATOR_DOT 9.1GB RAM |"
+Animate-Text-x2 "| 11 $SYMBOL_MODEL_SELECTED MATHEMATICAL INTELLIGENCE       OpenMath-Nemotron 14B Q4 $SYMBOL_SEPARATOR_DOT 9.1GB $MEMORY_TYPE |"
 Write-Host "|     Optimized for symbolic reasoning, step-by-step math solutions          |"
 Write-Host "|     and logic-based inference.                                             |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 12 $SYMBOL_MODEL_SELECTED MULTILINGUAL UNDERSTANDING                  Gemma-3 4B Q4 $SYMBOL_SEPARATOR_DOT 2.6GB RAM |"
+Animate-Text-x2 "| 12 $SYMBOL_MODEL_SELECTED MULTILINGUAL UNDERSTANDING                 Gemma-3 4B Q4 $SYMBOL_SEPARATOR_DOT 2.6GB $MEMORY_TYPE |"
 Write-Host "|     Balanced intelligence with high-quality cross-lingual comprehension,   |"
 Write-Host "|     translation and multilingual reasoning.                                |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 13 $SYMBOL_MODEL_SELECTED RUST PROGRAMMING                      Tessa-Rust-T1 7B Q6 $SYMBOL_SEPARATOR_DOT 6.3GB RAM |"
+Animate-Text-x2 "| 13 $SYMBOL_MODEL_SELECTED RUST PROGRAMMING                     Tessa-Rust-T1 7B Q6 $SYMBOL_SEPARATOR_DOT 6.3GB $MEMORY_TYPE |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 14 $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS               OlympicCoder 7B Q6 $SYMBOL_SEPARATOR_DOT 6.3GB RAM |"
+Animate-Text-x2 "| 14 $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS              OlympicCoder 7B Q6 $SYMBOL_SEPARATOR_DOT 6.3GB $MEMORY_TYPE |"
 Write-Host "|     Optimized for symbolic reasoning, step-by-step math solutions          |"
 Write-Host "|     and logic-based inference.                                             |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 15 $SYMBOL_MODEL_SELECTED LOW MEMORY MODEL                            Qwen3 1.7B Q4 $SYMBOL_SEPARATOR_DOT 1.2GB RAM |"
+Animate-Text-x2 "| 15 $SYMBOL_MODEL_SELECTED LOW MEMORY MODEL                           Qwen3 1.7B Q4 $SYMBOL_SEPARATOR_DOT 1.2GB $MEMORY_TYPE |"
 Write-Host "|============================================================================|"
 Write-Host ""
 
@@ -506,9 +511,9 @@ switch ($NODE_CLASS) {
         $NODE_NAME = " $SYMBOL_MODEL_SELECTED PROGRAMMING & TECHNICAL: DeepCoder 14B Q4"
     }
     "10" {
-        $LLM_HF_REPO = "bartowski/nvidia_Llama-3.1-8B-UltraLong-4M-Instruct-GGUF"
-        $LLM_HF_MODEL_NAME = "nvidia_Llama-3.1-8B-UltraLong-4M-Instruct-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED LONG CONTEXT MODEL: Llama-3.1 8B UltraLong 4M Q4"
+        $LLM_HF_REPO = "jedisct1/MiMo-7B-RL-GGUF"
+        $LLM_HF_MODEL_NAME = "MiMo-7B-RL-Q4_K_M.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED MATH & CODE: MiMo 7B RL Q4"
     }
     "11" {
         $LLM_HF_REPO = "bartowski/nvidia_OpenMath-Nemotron-14B-GGUF"
