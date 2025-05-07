@@ -62,7 +62,7 @@ function Auto-Select-Model {
 
     $AVAILABLE_MEM_INT = [math]::Round($AVAILABLE_MEM)
     if ($AVAILABLE_MEM_INT -ge 32) {
-        Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_SELECTED 7 Qwen3 for problem solving & logical reasoning"
+        Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_SELECTED 3 Qwen3 for problem solving & logical reasoning"
         $global:LLM_HF_REPO = "unsloth/Qwen3-30B-A3B-GGUF"
         $global:LLM_HF_MODEL_NAME = "Qwen3-30B-A3B-Q4_K_M.gguf"
         $global:NODE_NAME = "Qwen3 30B A3B Q4"
@@ -77,7 +77,7 @@ function Auto-Select-Model {
         $global:LLM_HF_MODEL_NAME = "Qwen3-8B-Q4_K_M.gguf"
         $global:NODE_NAME = "Qwen3 8B Q4"
     } else {
-        Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_CUSTOM 15 Custom Import Qwen 3 optimized for efficiency"
+        Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_CUSTOM 16 Custom Import Qwen 3 optimized for efficiency"
         $global:LLM_HF_REPO = "unsloth/Qwen3-1.7B-GGUF"
         $global:LLM_HF_MODEL_NAME = "Qwen3-1.7B-Q4_K_M.gguf"
         $global:NODE_NAME = "Qwen 3 1.7B Q4"
@@ -420,6 +420,8 @@ Write-Host "|     Optimized for symbolic reasoning, step-by-step math solutions 
 Write-Host "|     and logic-based inference.                                             |"
 Write-Host "|============================================================================|"
 Animate-Text-x2 "| 5 $SYMBOL_MODEL_SELECTED COMPLEX RESEARCH                         GLM-4-Z1 32B Q4 $SYMBOL_SEPARATOR_DOT 19.7GB $MEMORY_TYPE |"
+Write-Host "|     Enhanced for deep reasoning, excels in mathematics,                    |"
+Write-Host "|     logic, and code generation, rivaling larger models in complex tasks.   |"
 Write-Host "|============================================================================|"
 Animate-Text-x2 "| 6 $SYMBOL_MODEL_SELECTED ACADEMIC KNOWLEDGE     Llama-4 Scout 17B 16E Instruct Q4 $SYMBOL_SEPARATOR_DOT 65.4GB $MEMORY_TYPE |"
 Write-Host "|     Advanced data integration and research synthesis protocol.             |"
@@ -436,26 +438,35 @@ Animate-Text-x2 "| 9 $SYMBOL_MODEL_SELECTED PROGRAMMING & TECHNICAL             
 Write-Host "|     Specialized system for code synthesis and framework construction.      |"
 Write-Host "|============================================================================|"
 Animate-Text-x2 "| 10 $SYMBOL_MODEL_SELECTED MATH & CODE                                MiMo 7B RL Q4 $SYMBOL_SEPARATOR_DOT 5.1GB $MEMORY_TYPE |"
+Write-Host "|     Solves math and logic problems effectively,                            |"
+Write-Host "|     with strong performance in structured reasoning and code tasks.        |"
 Write-Host "|============================================================================|"
 Animate-Text-x2 "| 11 $SYMBOL_MODEL_SELECTED MATHEMATICAL INTELLIGENCE       OpenMath-Nemotron 14B Q4 $SYMBOL_SEPARATOR_DOT 9.1GB $MEMORY_TYPE |"
 Write-Host "|     Optimized for symbolic reasoning, step-by-step math solutions          |"
 Write-Host "|     and logic-based inference.                                             |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 12 $SYMBOL_MODEL_SELECTED MULTILINGUAL UNDERSTANDING                 Gemma-3 4B Q4 $SYMBOL_SEPARATOR_DOT 2.6GB $MEMORY_TYPE |"
+Animate-Text-x2 "| 12 $SYMBOL_MODEL_SELECTED THEOREM PROVER                  DeepSeek-Prover V2 7B Q4 $SYMBOL_SEPARATOR_DOT 4.3GB $MEMORY_TYPE |"
+Write-Host "|     Expert in formal logic and proof solving,                              |"
+Write-Host "|     perfect for mathematics, theorem work, and structured reasoning tasks. |"
+Write-Host "|============================================================================|"
+Animate-Text-x2 "| 13 $SYMBOL_MODEL_SELECTED MULTILINGUAL UNDERSTANDING                 Gemma-3 4B Q4 $SYMBOL_SEPARATOR_DOT 2.6GB $MEMORY_TYPE |"
 Write-Host "|     Balanced intelligence with high-quality cross-lingual comprehension,   |"
 Write-Host "|     translation and multilingual reasoning.                                |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 13 $SYMBOL_MODEL_SELECTED RUST PROGRAMMING                     Tessa-Rust-T1 7B Q6 $SYMBOL_SEPARATOR_DOT 6.3GB $MEMORY_TYPE |"
+Animate-Text-x2 "| 14 $SYMBOL_MODEL_SELECTED RUST PROGRAMMING                     Tessa-Rust-T1 7B Q6 $SYMBOL_SEPARATOR_DOT 6.3GB $MEMORY_TYPE |"
+Write-Host "|     Focused on Rust programming, offering high-quality code generation.    |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 14 $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS              OlympicCoder 7B Q6 $SYMBOL_SEPARATOR_DOT 6.3GB $MEMORY_TYPE |"
+Animate-Text-x2 "| 15 $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS              OlympicCoder 7B Q6 $SYMBOL_SEPARATOR_DOT 6.3GB $MEMORY_TYPE |"
 Write-Host "|     Optimized for symbolic reasoning, step-by-step math solutions          |"
 Write-Host "|     and logic-based inference.                                             |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 15 $SYMBOL_MODEL_SELECTED LOW MEMORY MODEL                           Qwen3 1.7B Q4 $SYMBOL_SEPARATOR_DOT 1.2GB $MEMORY_TYPE |"
+Animate-Text-x2 "| 16 $SYMBOL_MODEL_SELECTED LOW MEMORY MODEL                           Qwen3 1.7B Q4 $SYMBOL_SEPARATOR_DOT 1.2GB $MEMORY_TYPE |"
+Write-Host "|     Ultra-efficient for resource-constrained environments,                 |"
+Write-Host "|     providing basic instruction-following and reasoning functionalities.   |"
 Write-Host "|============================================================================|"
 Write-Host ""
 
-$NODE_CLASS = Read-Host "Select your node's specialization [0-15] (0 for auto-select)"
+$NODE_CLASS = Read-Host "Select your node's specialization [0-16] (0 for auto-select)"
 
 switch ($NODE_CLASS) {
     "0" {
@@ -521,21 +532,26 @@ switch ($NODE_CLASS) {
         $NODE_NAME = " $SYMBOL_MODEL_SELECTED MATHEMATICAL INTELLIGENCE: OpenMath-Nemotron 14B Q4"
     }
     "12" {
+        $LLM_HF_REPO = "irmma/DeepSeek-Prover-V2-7B-Q4_K_M-GGUF"
+        $LLM_HF_MODEL_NAME = "deepseek-prover-v2-7b-q4_k_m-imat.gguf"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED THEOREM PROVER: DeepSeek-Prover V2 7B Q4"
+    }
+    "13" {
         $LLM_HF_REPO = "unsloth/gemma-3-4b-it-GGUF"
         $LLM_HF_MODEL_NAME = "gemma-3-4b-it-Q4_K_M.gguf"
         $NODE_NAME = " $SYMBOL_MODEL_SELECTED MULTILINGUAL UNDERSTANDING: Gemma-3 4B Q4"
     }
-    "13" {
+    "14" {
         $LLM_HF_REPO = "bartowski/Tesslate_Tessa-Rust-T1-7B-GGUF"
         $LLM_HF_MODEL_NAME = "Tesslate_Tessa-Rust-T1-7B-Q4_K_M.gguf"
         $NODE_NAME = " $SYMBOL_MODEL_SELECTED RUST PROGRAMMING: Tessa-Rust-T1 7B Q6"
     }
-    "14" {
+    "15" {
         $LLM_HF_REPO = "bartowski/open-r1_OlympicCoder-7B-GGUF"
         $LLM_HF_MODEL_NAME = "open-r1_OlympicCoder-7B-Q4_K_M.gguf"
         $NODE_NAME = " $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS: OlympicCoder 7B Q6"
     }
-    "15" {
+    "16" {
         $LLM_HF_REPO = "unsloth/Qwen3-1.7B-GGUF"
         $LLM_HF_MODEL_NAME = "Qwen3-1.7B-Q4_K_M.gguf"
         $NODE_NAME = " $SYMBOL_MODEL_SELECTED LOW MEMORY MODEL: Qwen3 1.7B Q4"
