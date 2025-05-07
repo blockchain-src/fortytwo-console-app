@@ -71,7 +71,7 @@ function Auto-Select-Model {
         $global:LLM_HF_MODEL_NAME = "Qwen3-8B-Q4_K_M.gguf"
         $global:NODE_NAME = "Qwen3 8B Q4"
     } else {
-        Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_CUSTOM 16 Custom Import Qwen 3 optimized for efficiency"
+        Animate-Text "    $SYMBOL_CROWN Recommending: $SYMBOL_MODEL_SELECTED 16 Qwen 3 7.1B optimized for efficiency"
         $global:LLM_HF_REPO = "unsloth/Qwen3-1.7B-GGUF"
         $global:LLM_HF_MODEL_NAME = "Qwen3-1.7B-Q4_K_M.gguf"
         $global:NODE_NAME = "Qwen 3 1.7B Q4"
@@ -148,7 +148,7 @@ function Cleanup {
 
 Animate-Text ($SYMBOL_HEADER_IN -join ''),"Checking for the Latest Components Versions",($SYMBOL_HEADER_OUT -join '')
 Write-Host ""
-Animate-Text " $SYMBOL_COMP_SETUPSCRIPT Setup script"
+Animate-Text " $SYMBOL_COMP_SETUPSCRIPT Setup script - version validation"
 
 # --- Update setup script ---
 $UpdateUrl = "https://raw.githubusercontent.com/Fortytwo-Network/fortytwo-console-app/main/windows.ps1"
@@ -297,7 +297,7 @@ if (Test-Path $ACCOUNT_PRIVATE_KEY_FILE) {
     Write-Host "|  Each node requires a secure blockchain identity.       |"
     Write-Host "|  Select one of the following options:                   |"
     Write-Host "|                                                         |"
-    Write-Host "|  1. Create a new identity with an invite code.          |"
+    Write-Host "|  1. Create a new identity with an activation code.      |"
     Write-Host "|     Recommended for new nodes.                          |"
     Write-Host "|                                                         |"
     Write-Host "|  2. Recover an existing identity with recovery phrase.  |"
@@ -336,13 +336,13 @@ if (Test-Path $ACCOUNT_PRIVATE_KEY_FILE) {
             }
         }
     } else {
-        Animate-Text "[1] Creating a new identity with an invite code"
+        Animate-Text "[1] Creating a new identity with an activation code"
         Write-Host ""
         while ($true) {
-            $INVITE_CODE = Read-Host "Enter your invite code"
+            $INVITE_CODE = Read-Host "Enter your activation code"
             Write-Host ""
             if (-not $INVITE_CODE -or $INVITE_CODE.Length -lt 12) {
-                Write-Host " ",($SYMBOL_STATE_SADFACE -join ''),"Invalid invite code. Check the code and try again."
+                Write-Host " ",($SYMBOL_STATE_SADFACE -join ''),"Invalid activation code. Check the code and try again."
                 Write-Host ""
                 continue
             } else {

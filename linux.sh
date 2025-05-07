@@ -43,7 +43,7 @@ auto_select_model() {
         LLM_HF_MODEL_NAME="Qwen3-8B-Q4_K_M.gguf"
         NODE_NAME="Qwen3 8B Q4"
     else
-        animate_text "    🜲 Recommending: ✶ 16 Custom Import Qwen 3 optimized for efficiency"
+        animate_text "    🜲 Recommending: ⬢ 16 Qwen 3 1.7B optimized for efficiency"
         LLM_HF_REPO="unsloth/Qwen3-1.7B-GGUF"
         LLM_HF_MODEL_NAME="Qwen3-1.7B-Q4_K_M.gguf"
         NODE_NAME="Qwen 3 1.7B Q4"
@@ -120,7 +120,7 @@ fi
 
 animate_text "▒▓░ Checking for the Latest Components Versions ░▓▒"
 echo
-animate_text "◰ Setup script"
+animate_text "◰ Setup script — version validation"
 
 # --- Update setup script ---
 INSTALLER_UPDATE_URL="https://raw.githubusercontent.com/Fortytwo-Network/fortytwo-console-app/main/linux.sh"
@@ -242,7 +242,7 @@ else
     echo -e "║  Each node requires a secure blockchain identity.       ║"
     echo -e "║  Select one of the following options:                   ║"
     echo -e "║                                                         ║"
-    echo -e "║  1. Create a new identity with an invite code.          ║"
+    echo -e "║  1. Create a new identity with an activation code.      ║"
     echo -e "║     Recommended for new nodes.                          ║"
     echo -e "║                                                         ║"
     echo -e "║  2. Recover an existing identity with recovery phrase.  ║"
@@ -273,13 +273,13 @@ else
             fi
         done
     else
-        animate_text "[1] Creating a new identity with an invite code"
+        animate_text "[1] Creating a new identity with an activation code"
         echo
         while true; do
-            read -r -p "Enter your invite code: " INVITE_CODE
+            read -r -p "Enter your activation code: " INVITE_CODE
             echo
             if [[ -z "$INVITE_CODE" || ${#INVITE_CODE} -lt 12 ]]; then
-                echo "˙◠˙ Invalid invite code. Check the code and try again."
+                echo "˙◠˙ Invalid activation code. Check the code and try again."
                 echo
                 continue
             fi
