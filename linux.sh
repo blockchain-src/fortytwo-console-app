@@ -440,7 +440,7 @@ case $NODE_CLASS in
         ;;
     6)
         LLM_HF_REPO="unsloth/Llama-4-Scout-17B-16E-Instruct-GGUF"
-        LLM_HF_MODEL_NAME="Llama-4-Scout-17B-16E-Instruct-Q4_K_M-00001-of-00002.gguf"
+        LLM_HF_MODEL_NAME="Q4_K_M/Llama-4-Scout-17B-16E-Instruct-Q4_K_M-00001-of-00002.gguf"
         NODE_NAME="⬢ ACADEMIC KNOWLEDGE: Llama-4 Scout 17B 16E Instruct Q4"
         ;;
     7)
