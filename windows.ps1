@@ -197,7 +197,7 @@ if (Test-Path $CAPSULE_EXEC) {
         if (Get-Command "nvidia-smi.exe" -ErrorAction SilentlyContinue) {
             Animate-Text "    $SYMBOL_NEWLINE NVIDIA detected. Downloading CUDA Capsule..."
             $DOWNLOAD_CAPSULE_URL = "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/capsule/v$CAPSULE_VERSION/windows-amd64-cuda124.zip"
-            Invoke-WebRequest -Uri $DOWNLOAD_CAPSULE_URL -OutFile $CAPSULE_ZIP
+            Start-BitsTransfer -Source $DOWNLOAD_CAPSULE_URL -Destination $CAPSULE_ZIP
             Animate-Text "    $SYMBOL_NEWLINE Extracting CUDA Capsule..."
             Remove-Item $CAPSULE_EXEC -Force
             Remove-Item "$PROJECT_DIR\cublas64_12.dll" -Force
@@ -216,7 +216,7 @@ if (Test-Path $CAPSULE_EXEC) {
         } else {
             Write-Host "    $SYMBOL_NEWLINE No NVIDIA GPU detected. Downloading CPU Capsule..."
             $DOWNLOAD_CAPSULE_URL = "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/capsule/v$CAPSULE_VERSION/FortytwoCapsule-windows-amd64.exe"
-            Invoke-WebRequest -Uri $DOWNLOAD_CAPSULE_URL -OutFile $CAPSULE_EXEC
+            Start-BitsTransfer -Source $DOWNLOAD_CAPSULE_URL -Destination $CAPSULE_EXEC
             Animate-Text "    $SYMBOL_STATE_SUCCESS Successfully updated"
         }
     }
@@ -224,7 +224,7 @@ if (Test-Path $CAPSULE_EXEC) {
     if (Get-Command "nvidia-smi.exe" -ErrorAction SilentlyContinue) {
         Animate-Text "    $SYMBOL_NEWLINE NVIDIA detected. Downloading CUDA Capsule..."
         $DOWNLOAD_CAPSULE_URL = "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/capsule/v$CAPSULE_VERSION/windows-amd64-cuda124.zip"
-        Invoke-WebRequest -Uri $DOWNLOAD_CAPSULE_URL -OutFile $CAPSULE_ZIP
+        Start-BitsTransfer -Source $DOWNLOAD_CAPSULE_URL -Destination $CAPSULE_ZIP
         Animate-Text "    $SYMBOL_NEWLINE Extracting CUDA Capsule..."
         Expand-Archive -Path $CAPSULE_ZIP -DestinationPath $PROJECT_DIR -Force
         Remove-Item $CAPSULE_ZIP -Force
@@ -240,7 +240,7 @@ if (Test-Path $CAPSULE_EXEC) {
     } else {
         Animate-Text "    $SYMBOL_NEWLINE No NVIDIA GPU detected. Downloading CPU Capsule..."
         $DOWNLOAD_CAPSULE_URL = "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/capsule/v$CAPSULE_VERSION/FortytwoCapsule-windows-amd64.exe"
-        Invoke-WebRequest -Uri $DOWNLOAD_CAPSULE_URL -OutFile $CAPSULE_EXEC
+        Start-BitsTransfer -Source $DOWNLOAD_CAPSULE_URL -Destination $CAPSULE_EXEC
         Animate-Text "    $SYMBOL_STATE_SUCCESS Installed to: $CAPSULE_EXEC"
     }
 }
@@ -253,12 +253,12 @@ if (Test-Path $PROTOCOL_EXEC) {
         Animate-Text "    $SYMBOL_STATE_SUCCESS Up to date"
     } else {
         Animate-Text "    $SYMBOL_NEWLINE Updating..."
-        Invoke-WebRequest -Uri $DOWNLOAD_PROTOCOL_URL -OutFile $PROTOCOL_EXEC
+        Start-BitsTransfer -Source $DOWNLOAD_PROTOCOL_URL -Destination $PROTOCOL_EXEC
         Animate-Text "    $SYMBOL_STATE_SUCCESS Successfully updated"
     }
 } else {
     Animate-Text "    $SYMBOL_NEWLINE Downloading..."
-    Invoke-WebRequest -Uri $DOWNLOAD_PROTOCOL_URL -OutFile $PROTOCOL_EXEC
+    Start-BitsTransfer -Source $DOWNLOAD_PROTOCOL_URL -Destination $PROTOCOL_EXEC
     Animate-Text "    $SYMBOL_STATE_SUCCESS Installed to: $PROTOCOL_EXEC"
 }
 $UTILS_VERSION = (Invoke-RestMethod "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/utilities/latest").Trim()
@@ -270,12 +270,12 @@ if (Test-Path $UTILS_EXEC) {
         Animate-Text "    $SYMBOL_STATE_SUCCESS Up to date"
     } else {
         Animate-Text "    $SYMBOL_NEWLINE Updating..."
-        Invoke-WebRequest -Uri $DOWNLOAD_UTILS_URL -OutFile $UTILS_EXEC
+        Start-BitsTransfer -Source $DOWNLOAD_UTILS_URL -Destination $UTILS_EXEC
         Animate-Text "    $SYMBOL_STATE_SUCCESS Successfully updated"
     }
 } else {
     Animate-Text "    $SYMBOL_NEWLINE Downloading..."
-    Invoke-WebRequest -Uri $DOWNLOAD_UTILS_URL -OutFile $UTILS_EXEC
+    Start-BitsTransfer -Source $DOWNLOAD_UTILS_URL -Destination $UTILS_EXEC
     Animate-Text "     $SYMBOL_STATE_SUCCESS Installed to: $UTILS_EXEC"
 }
 
@@ -578,11 +578,11 @@ Write-Host ""
 function Node-Startup {
 Animate-Text " $SYMBOL_COMP_CAPSULE Starting Capsule..."
 
-    $CAPSULE_PROC = Start-Process -FilePath $CAPSULE_EXEC -ArgumentList "--llm-hf-repo $LLM_HF_REPO --llm-hf-model-name $LLM_HF_MODEL_NAME --model-cache $PROJECT_MODEL_CACHE_DIR" -PassThru -RedirectStandardOutput $CAPSULE_LOGS -RedirectStandardError $CAPSULE_ERR_LOGS -NoNewWindow
+    $global:CAPSULE_PROC = Start-Process -FilePath $CAPSULE_EXEC -ArgumentList "--llm-hf-repo $LLM_HF_REPO --llm-hf-model-name $LLM_HF_MODEL_NAME --model-cache $PROJECT_MODEL_CACHE_DIR" -PassThru -RedirectStandardOutput $CAPSULE_LOGS -RedirectStandardError $CAPSULE_ERR_LOGS -NoNewWindow
     Animate-Text "Be patient, it may take some time."
     while ($true) {
-        if ($CAPSULE_PROC.HasExited) {
-            Write-Host " $SYMBOL_COMP_CAPSULE Capsule process exited (exit code: $($CAPSULE_PROC.ExitCode))" -ForegroundColor Red
+        if ($global:CAPSULE_PROC.HasExited) {
+            Write-Host " $SYMBOL_COMP_CAPSULE Capsule process exited (exit code: $($global:CAPSULE_PROC.ExitCode))" -ForegroundColor Red
             try {
                 Get-Content $CAPSULE_LOGS -Tail 1
             } catch {
@@ -611,7 +611,7 @@ Animate-Text " $SYMBOL_COMP_CAPSULE Starting Capsule..."
     Write-Host "" 
     Animate-Text "Joining ::||"
     Write-Host "" 
-    $PROTOCOL_PROC = Start-Process -FilePath $PROTOCOL_EXEC -ArgumentList "--account-private-key $ACCOUNT_PRIVATE_KEY --db-folder $PROTOCOL_DB_DIR" -PassThru -NoNewWindow
+    $global:PROTOCOL_PROC = Start-Process -FilePath $PROTOCOL_EXEC -ArgumentList "--account-private-key $ACCOUNT_PRIVATE_KEY --db-folder $PROTOCOL_DB_DIR" -PassThru -NoNewWindow
 }
 
 Node-Startup
