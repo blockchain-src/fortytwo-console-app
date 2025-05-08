@@ -80,7 +80,7 @@ if command -v nvidia-smi &> /dev/null; then
     MEMORY_TYPE="VRAM"
 else
     MEMORY_TYPE=" RAM"
-    echo "    ✕ ERROR: No compatible GPU found. This node application requires a GPU, but only a CPU was detected. Please ensure your system meets the minimum GPU requirements by reviewing our documentation: https://docs.fortytwo.network/docs/hardware-requirements"
+    echo "    ✕ ERROR: No compatible GPU found. This application requires an NVIDIA GPU. Please verify that your system has a supported NVIDIA GPU by reviewing our hardware requirements documentation: https://docs.fortytwo.network/docs/hardware-requirements"
     exit 1
 fi
 PROJECT_DIR="./FortytwoNode"

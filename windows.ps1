@@ -86,7 +86,7 @@ if (Get-Command "nvidia-smi.exe" -ErrorAction SilentlyContinue) {
     $MEMORY_TYPE="VRAM"
 } else {
     $MEMORY_TYPE=" RAM"
-    Write-Output "    $SYMBOL_STATE_FAILURE ERROR: No compatible GPU found. This node application requires a GPU, but only a CPU was detected. Please ensure your system meets the minimum GPU requirements by reviewing our documentation: https://docs.fortytwo.network/docs/hardware-requirements"
+    Write-Output "    $SYMBOL_STATE_FAILURE ERROR: No compatible GPU found. This application requires an NVIDIA GPU. Please verify that your system has a supported NVIDIA GPU by reviewing our hardware requirements documentation: https://docs.fortytwo.network/docs/hardware-requirements"
     exit 1
 }
 
