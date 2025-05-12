@@ -450,7 +450,7 @@ Write-Host "|     with strong performance in structured reasoning and code tasks
 Write-Host "|============================================================================|"
 Animate-Text-x2 "| 11 $SYMBOL_MODEL_SELECTED MATHEMATICAL INTELLIGENCE       OpenMath-Nemotron 14B Q4 $SYMBOL_SEPARATOR_DOT 9.1GB $MEMORY_TYPE |"
 Write-Host "|     Excels at math questions, particularly useful for academic             |"
-Write-Host "|     and competition-style problem-solving                                  |"
+Write-Host "|     and competition-style problem-solving.                                 |"
 Write-Host "|============================================================================|"
 Animate-Text-x2 "| 12 $SYMBOL_MODEL_SELECTED THEOREM PROVER                  DeepSeek-Prover V2 7B Q4 $SYMBOL_SEPARATOR_DOT 4.3GB $MEMORY_TYPE |"
 Write-Host "|     Expert in formal logic and proof solving,                              |"
