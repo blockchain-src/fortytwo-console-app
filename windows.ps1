@@ -416,7 +416,7 @@ Write-Host "|     and following complex instructions across a wide range of topi
 Write-Host "|============================================================================|"
 Animate-Text-x2 "| 3 $SYMBOL_MODEL_SELECTED ADVANCED REASONING                      Qwen3 30B A3B Q4 $SYMBOL_SEPARATOR_DOT 18.6GB $MEMORY_TYPE |"
 Write-Host "|     High-performing reasoning for depth and clarity across topics          |"
-Write-Host "|     like logic, math, and coding – designed to be both fast and capable.   |"
+Write-Host "|     like logic, math, and coding - designed to be both fast and capable.   |"
 Write-Host "|============================================================================|"
 Animate-Text-x2 "| 4 $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS             OlympicCoder 32B Q4 $SYMBOL_SEPARATOR_DOT 19.9GB $MEMORY_TYPE |"
 Write-Host "|     Optimized for symbolic reasoning, step-by-step math solutions          |"
