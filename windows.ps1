@@ -3,11 +3,13 @@ function Animate-Text {
         [string]$text
     )
 
-    foreach ($char in $text.ToCharArray()) {
-        Write-Host -NoNewline $char
-        Start-Sleep -Milliseconds 1
+    if (![string]::IsNullOrEmpty($text)) {
+        foreach ($char in $text.ToCharArray()) {
+            Write-Host -NoNewline $char
+            Start-Sleep -Milliseconds 1
+        }
+        Write-Host ""
     }
-    Write-Host ""
 }
 function Animate-Text-x2 {
     param (
