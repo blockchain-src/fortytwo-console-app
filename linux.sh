@@ -127,12 +127,13 @@ curl -s --connect-timeout 3 --max-time 5 -o /dev/null "https://fortytwo-network-
 PROTOCOL_S3_STATUS=$?
 
 if [ "$CAPSULE_S3_STATUS" -eq 0 ] && [ "$PROTOCOL_S3_STATUS" -eq 0 ]; then
-  echo " ✓ Connected."
+  echo "    ✓ Connected"
+  echo
 elif [ "$CAPSULE_S3_STATUS" -ne 0 ] && [ "$PROTOCOL_S3_STATUS" -ne 0 ]; then
-  echo " ✕ ERROR: no connection. Check your internet connection, try using a VPN, and restart the script."
+  echo "    ✕ ERROR: no connection. Check your internet connection, try using a VPN, and restart the script."
   exit 1
 else
-  echo " ✕ ERROR: partial connection failure. Try using a VPN and restart the script."
+  echo "    ✕ ERROR: partial connection failure. Try using a VPN and restart the script."
   exit 1
 fi
 
@@ -156,7 +157,7 @@ fi
 # Compare
 if cmp -s "$SCRIPT_PATH" "$TEMP_FILE"; then
     # No update needed
-    echo "    ✓ Up to date."
+    echo "    ✓ Up to date"
     rm "$TEMP_FILE"
 else
     echo "    ↳ Updating..."

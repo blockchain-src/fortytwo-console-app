@@ -30,6 +30,7 @@ $SYMBOL_MODEL_CUSTOM = [char]0x2736
 $SYMBOL_MODEL_AUTOSELECT = [char]0x1360
 $SYMBOL_MODEL_LASTUSED = [char]0x25C1 
 $SYMBOL_COMP_SETUPSCRIPT = [char]0x144E
+$SYMBOL_COMP_CONNECTION = [char]0x39E
 $SYMBOL_COMP_CAPSULE = [char]0x1403
 $SYMBOL_COMP_NODE = [char]0x46A
 $SYMBOL_COMP_UTILS = [char]0x15D1
@@ -157,16 +158,16 @@ function Test-UrlAvailability {
         return $false
     }
 }
-Animate-Text "Connection check to update endpoints"
+Animate-Text " $SYMBOL_COMP_CONNECTION Connection check to update endpoints"
 $capsuleOk = Test-UrlAvailability -Url "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/capsule/latest"
 $protocolOk = Test-UrlAvailability -Url "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/protocol/latest"
 if ($capsuleOk -and $protocolOk) {
-    Write-Host " $SYMBOL_STATE_SUCCESS Connected."
+    Write-Host "    $SYMBOL_STATE_SUCCESS Connected."
 } elseif (-not $capsuleOk -and -not $protocolOk) {
-    Write-Host " $SYMBOL_STATE_FAILURE ERROR: no connection. Check your internet connection, try using a VPN, and restart the script."
+    Write-Host "    $SYMBOL_STATE_FAILURE ERROR: no connection. Check your internet connection, try using a VPN, and restart the script."
     exit 1
 } else {
-    Write-Host " $SYMBOL_STATE_FAILURE ERROR: partial connection failure. Try using a VPN and restart the script."
+    Write-Host "    $SYMBOL_STATE_FAILURE ERROR: partial connection failure. Try using a VPN and restart the script."
     exit 1
 }
 
@@ -189,7 +190,7 @@ try {
 
 # Compare
 if ((Get-FileHash $ScriptPath).Hash -eq (Get-FileHash $TempFile).Hash) {
-    Write-Output "    $SYMBOL_STATE_SUCCESS Up to date."
+    Write-Output "    $SYMBOL_STATE_SUCCESS Up to date"
     Remove-Item $TempFile
 } else {
     Write-Output "    $SYMBOL_NEWLINE Updating..."
