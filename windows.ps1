@@ -146,6 +146,30 @@ function Cleanup {
     exit 0
 }
 
+function Test-UrlAvailability {
+    param (
+        [string]$Url
+    )
+    try {
+        $response = Invoke-WebRequest -Uri $Url -Method Head -TimeoutSec 5 -ErrorAction Stop
+        return $true
+    } catch {
+        return $false
+    }
+}
+Animate-Text "Connection check to update endpoints"
+$capsuleOk = Test-UrlAvailability -Url "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/capsule/latest"
+$protocolOk = Test-UrlAvailability -Url "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/protocol/latest"
+if ($capsuleOk -and $protocolOk) {
+    Write-Host " $SYMBOL_STATE_SUCCESS Connected."
+} elseif (-not $capsuleOk -and -not $protocolOk) {
+    Write-Host " $SYMBOL_STATE_FAILURE ERROR: no connection. Check your internet connection, try using a VPN, and restart the script."
+    exit 1
+} else {
+    Write-Host " $SYMBOL_STATE_FAILURE ERROR: partial connection failure. Try using a VPN and restart the script."
+    exit 1
+}
+
 Animate-Text ($SYMBOL_HEADER_IN -join ''),"Checking for the Latest Components Versions",($SYMBOL_HEADER_OUT -join '')
 Write-Host ""
 Animate-Text " $SYMBOL_COMP_SETUPSCRIPT Setup script - version validation"
@@ -338,6 +362,7 @@ if (Test-Path $ACCOUNT_PRIVATE_KEY_FILE) {
     } else {
         Animate-Text "[1] Creating a new identity with an activation code"
         Write-Host ""
+        & $UTILS_EXEC --check-drop-service; if ($LASTEXITCODE) { exit 1 }
         while ($true) {
             $INVITE_CODE = Read-Host "Enter your activation code"
             Write-Host ""
