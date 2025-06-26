@@ -486,10 +486,10 @@ Animate-Text-x2 "| 13 $SYMBOL_MODEL_SELECTED MULTILINGUAL UNDERSTANDING         
 Write-Host "|     Supports over 140 languages with solid instruction-following           |"
 Write-Host "|     and fast response capabilities.                                        |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 14 $SYMBOL_MODEL_SELECTED RUST PROGRAMMING                     Tessa-Rust-T1 7B Q6 $SYMBOL_SEPARATOR_DOT 6.3GB $MEMORY_TYPE |"
+Animate-Text-x2 "| 14 $SYMBOL_MODEL_SELECTED RUST PROGRAMMING                     Tessa-Rust-T1 7B Q4 $SYMBOL_SEPARATOR_DOT 6.3GB $MEMORY_TYPE |"
 Write-Host "|     Focused on Rust programming, offering high-quality code generation.    |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 15 $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS              OlympicCoder 7B Q6 $SYMBOL_SEPARATOR_DOT 6.3GB $MEMORY_TYPE |"
+Animate-Text-x2 "| 15 $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS              OlympicCoder 7B Q4 $SYMBOL_SEPARATOR_DOT 6.3GB $MEMORY_TYPE |"
 Write-Host "|     Optimized for symbolic reasoning, step-by-step math solutions          |"
 Write-Host "|     and logic-based inference.                                             |"
 Write-Host "|============================================================================|"
@@ -577,12 +577,12 @@ switch ($NODE_CLASS) {
     "14" {
         $LLM_HF_REPO = "bartowski/Tesslate_Tessa-Rust-T1-7B-GGUF"
         $LLM_HF_MODEL_NAME = "Tesslate_Tessa-Rust-T1-7B-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED RUST PROGRAMMING: Tessa-Rust-T1 7B Q6"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED RUST PROGRAMMING: Tessa-Rust-T1 7B Q4"
     }
     "15" {
         $LLM_HF_REPO = "bartowski/open-r1_OlympicCoder-7B-GGUF"
         $LLM_HF_MODEL_NAME = "open-r1_OlympicCoder-7B-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS: OlympicCoder 7B Q6"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS: OlympicCoder 7B Q4"
     }
     "16" {
         $LLM_HF_REPO = "unsloth/Qwen3-1.7B-GGUF"

@@ -415,10 +415,10 @@ animate_text_x2 "║ 13 ⬢ MULTILINGUAL UNDERSTANDING                Gemma-3 4B
 echo "║     Supports over 140 languages with solid instruction-following          ║"
 echo "║     and fast response capabilities.                                       ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 14 ⬢ RUST PROGRAMMING                    Tessa-Rust-T1 7B Q6 • 6.3GB ${MEMORY_TYPE} ║"
+animate_text_x2 "║ 14 ⬢ RUST PROGRAMMING                    Tessa-Rust-T1 7B Q4 • 6.3GB ${MEMORY_TYPE} ║"
 echo "║     Focused on Rust programming, offering high-quality code generation.   ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 15 ⬢ PROGRAMMING & ALGORITHMS             OlympicCoder 7B Q6 • 6.3GB ${MEMORY_TYPE} ║"
+animate_text_x2 "║ 15 ⬢ PROGRAMMING & ALGORITHMS             OlympicCoder 7B Q4 • 6.3GB ${MEMORY_TYPE} ║"
 echo "║     Optimized for symbolic reasoning, step-by-step math solutions         ║"
 echo "║     and logic-based inference.                                            ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
@@ -507,12 +507,12 @@ case $NODE_CLASS in
     14)
         LLM_HF_REPO="bartowski/Tesslate_Tessa-Rust-T1-7B-GGUF"
         LLM_HF_MODEL_NAME="Tesslate_Tessa-Rust-T1-7B-Q4_K_M.gguf"
-        NODE_NAME="⬢ RUST PROGRAMMING: Tessa-Rust-T1 7B Q6"
+        NODE_NAME="⬢ RUST PROGRAMMING: Tessa-Rust-T1 7B Q4"
         ;;
     15)
         LLM_HF_REPO="bartowski/open-r1_OlympicCoder-7B-GGUF"
         LLM_HF_MODEL_NAME="open-r1_OlympicCoder-7B-Q4_K_M.gguf"
-        NODE_NAME="⬢ PROGRAMMING & ALGORITHMS: OlympicCoder 7B Q6"
+        NODE_NAME="⬢ PROGRAMMING & ALGORITHMS: OlympicCoder 7B Q4"
         ;;
     16)
         LLM_HF_REPO="unsloth/Qwen3-1.7B-GGUF"
