@@ -112,6 +112,25 @@ if ! command -v curl &> /dev/null; then
     exit 1
 fi
 
+animate_text "Ξ Connection check to update endpoints"
+
+curl -s --connect-timeout 3 --max-time 5 -o /dev/null "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/capsule/latest"
+CAPSULE_S3_STATUS=$?
+
+curl -s --connect-timeout 3 --max-time 5 -o /dev/null "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/protocol/latest"
+PROTOCOL_S3_STATUS=$?
+
+if [ "$CAPSULE_S3_STATUS" -eq 0 ] && [ "$PROTOCOL_S3_STATUS" -eq 0 ]; then
+  echo "    ✓ Connected"
+  echo
+elif [ "$CAPSULE_S3_STATUS" -ne 0 ] && [ "$PROTOCOL_S3_STATUS" -ne 0 ]; then
+  echo "    ✕ ERROR: no connection. Check your internet connection, try using a VPN, and restart the script."
+  exit 1
+else
+  echo "    ✕ ERROR: partial connection failure. Try using a VPN and restart the script."
+  exit 1
+fi
+
 animate_text "▒▓░ Checking for the Latest Components Versions ░▓▒"
 echo
 animate_text "◰ Setup script — version validation"
@@ -132,7 +151,7 @@ fi
 # Compare
 if cmp -s "$SCRIPT_PATH" "$TEMP_FILE"; then
     # No update needed
-    echo "    ✓ Up to date."
+    echo "    ✓ Up to date"
     rm "$TEMP_FILE"
 else
     echo "    ↳ Updating..."
@@ -257,6 +276,7 @@ else
     else
         animate_text "[1] Creating a new identity with an activation code"
         echo
+        "$UTILS_EXEC" --check-drop-service || exit 1
         while true; do
             read -r -p "Enter your activation code: " INVITE_CODE
             echo
@@ -377,10 +397,10 @@ animate_text_x2 "║ 13 ⬢ MULTILINGUAL UNDERSTANDING                 Gemma-3 4
 echo "║     Supports over 140 languages with solid instruction-following          ║"
 echo "║     and fast response capabilities.                                       ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 14 ⬢ RUST PROGRAMMING                     Tessa-Rust-T1 7B Q6 • 6.3GB ${MEMORY_TYPE} ║"
+animate_text_x2 "║ 14 ⬢ RUST PROGRAMMING                     Tessa-Rust-T1 7B Q4 • 6.3GB ${MEMORY_TYPE} ║"
 echo "║     Focused on Rust programming, offering high-quality code generation.   ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
-animate_text_x2 "║ 15 ⬢ PROGRAMMING & ALGORITHMS              OlympicCoder 7B Q6 • 6.3GB ${MEMORY_TYPE} ║"
+animate_text_x2 "║ 15 ⬢ PROGRAMMING & ALGORITHMS              OlympicCoder 7B Q4 • 6.3GB ${MEMORY_TYPE} ║"
 echo "║     Optimized for symbolic reasoning, step-by-step math solutions         ║"
 echo "║     and logic-based inference.                                            ║"
 echo "╠═══════════════════════════════════════════════════════════════════════════╣"
@@ -469,12 +489,12 @@ case $NODE_CLASS in
     14)
         LLM_HF_REPO="bartowski/Tesslate_Tessa-Rust-T1-7B-GGUF"
         LLM_HF_MODEL_NAME="Tesslate_Tessa-Rust-T1-7B-Q4_K_M.gguf"
-        NODE_NAME="⬢ RUST PROGRAMMING: Tessa-Rust-T1 7B Q6"
+        NODE_NAME="⬢ RUST PROGRAMMING: Tessa-Rust-T1 7B Q4"
         ;;
     15)
         LLM_HF_REPO="bartowski/open-r1_OlympicCoder-7B-GGUF"
         LLM_HF_MODEL_NAME="open-r1_OlympicCoder-7B-Q4_K_M.gguf"
-        NODE_NAME="⬢ PROGRAMMING & ALGORITHMS: OlympicCoder 7B Q6"
+        NODE_NAME="⬢ PROGRAMMING & ALGORITHMS: OlympicCoder 7B Q4"
         ;;
     16)
         LLM_HF_REPO="unsloth/Qwen3-1.7B-GGUF"

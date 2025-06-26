@@ -32,6 +32,7 @@ $SYMBOL_MODEL_CUSTOM = [char]0x2736
 $SYMBOL_MODEL_AUTOSELECT = [char]0x1360
 $SYMBOL_MODEL_LASTUSED = [char]0x25C1 
 $SYMBOL_COMP_SETUPSCRIPT = [char]0x144E
+$SYMBOL_COMP_CONNECTION = [char]0x39E
 $SYMBOL_COMP_CAPSULE = [char]0x1403
 $SYMBOL_COMP_NODE = [char]0x46A
 $SYMBOL_COMP_UTILS = [char]0x15D1
@@ -148,6 +149,30 @@ function Cleanup {
     exit 0
 }
 
+function Test-UrlAvailability {
+    param (
+        [string]$Url
+    )
+    try {
+        $response = Invoke-WebRequest -Uri $Url -Method Head -TimeoutSec 5 -ErrorAction Stop
+        return $true
+    } catch {
+        return $false
+    }
+}
+Animate-Text " $SYMBOL_COMP_CONNECTION Connection check to update endpoints"
+$capsuleOk = Test-UrlAvailability -Url "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/capsule/latest"
+$protocolOk = Test-UrlAvailability -Url "https://fortytwo-network-public.s3.us-east-2.amazonaws.com/protocol/latest"
+if ($capsuleOk -and $protocolOk) {
+    Write-Host "    $SYMBOL_STATE_SUCCESS Connected."
+} elseif (-not $capsuleOk -and -not $protocolOk) {
+    Write-Host "    $SYMBOL_STATE_FAILURE ERROR: no connection. Check your internet connection, try using a VPN, and restart the script."
+    exit 1
+} else {
+    Write-Host "    $SYMBOL_STATE_FAILURE ERROR: partial connection failure. Try using a VPN and restart the script."
+    exit 1
+}
+
 Animate-Text ($SYMBOL_HEADER_IN -join ''),"Checking for the Latest Components Versions",($SYMBOL_HEADER_OUT -join '')
 Write-Host ""
 Animate-Text " $SYMBOL_COMP_SETUPSCRIPT Setup script - version validation"
@@ -167,7 +192,7 @@ try {
 
 # Compare
 if ((Get-FileHash $ScriptPath).Hash -eq (Get-FileHash $TempFile).Hash) {
-    Write-Output "    $SYMBOL_STATE_SUCCESS Up to date."
+    Write-Output "    $SYMBOL_STATE_SUCCESS Up to date"
     Remove-Item $TempFile
 } else {
     Write-Output "    $SYMBOL_NEWLINE Updating..."
@@ -340,6 +365,7 @@ if (Test-Path $ACCOUNT_PRIVATE_KEY_FILE) {
     } else {
         Animate-Text "[1] Creating a new identity with an activation code"
         Write-Host ""
+        & $UTILS_EXEC --check-drop-service; if ($LASTEXITCODE) { exit 1 }
         while ($true) {
             $INVITE_CODE = Read-Host "Enter your activation code"
             Write-Host ""
@@ -462,10 +488,10 @@ Animate-Text-x2 "| 13 $SYMBOL_MODEL_SELECTED MULTILINGUAL UNDERSTANDING         
 Write-Host "|     Supports over 140 languages with solid instruction-following           |"
 Write-Host "|     and fast response capabilities.                                        |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 14 $SYMBOL_MODEL_SELECTED RUST PROGRAMMING                     Tessa-Rust-T1 7B Q6 $SYMBOL_SEPARATOR_DOT 6.3GB $MEMORY_TYPE |"
+Animate-Text-x2 "| 14 $SYMBOL_MODEL_SELECTED RUST PROGRAMMING                     Tessa-Rust-T1 7B Q4 $SYMBOL_SEPARATOR_DOT 6.3GB $MEMORY_TYPE |"
 Write-Host "|     Focused on Rust programming, offering high-quality code generation.    |"
 Write-Host "|============================================================================|"
-Animate-Text-x2 "| 15 $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS              OlympicCoder 7B Q6 $SYMBOL_SEPARATOR_DOT 6.3GB $MEMORY_TYPE |"
+Animate-Text-x2 "| 15 $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS              OlympicCoder 7B Q4 $SYMBOL_SEPARATOR_DOT 6.3GB $MEMORY_TYPE |"
 Write-Host "|     Optimized for symbolic reasoning, step-by-step math solutions          |"
 Write-Host "|     and logic-based inference.                                             |"
 Write-Host "|============================================================================|"
@@ -553,12 +579,12 @@ switch ($NODE_CLASS) {
     "14" {
         $LLM_HF_REPO = "bartowski/Tesslate_Tessa-Rust-T1-7B-GGUF"
         $LLM_HF_MODEL_NAME = "Tesslate_Tessa-Rust-T1-7B-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED RUST PROGRAMMING: Tessa-Rust-T1 7B Q6"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED RUST PROGRAMMING: Tessa-Rust-T1 7B Q4"
     }
     "15" {
         $LLM_HF_REPO = "bartowski/open-r1_OlympicCoder-7B-GGUF"
         $LLM_HF_MODEL_NAME = "open-r1_OlympicCoder-7B-Q4_K_M.gguf"
-        $NODE_NAME = " $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS: OlympicCoder 7B Q6"
+        $NODE_NAME = " $SYMBOL_MODEL_SELECTED PROGRAMMING & ALGORITHMS: OlympicCoder 7B Q4"
     }
     "16" {
         $LLM_HF_REPO = "unsloth/Qwen3-1.7B-GGUF"
