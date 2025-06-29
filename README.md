@@ -27,33 +27,24 @@ Fortytwo 是一种去中心化的 AI 协议，旨在解决集中式 AI 系统的
 
 ## 🚀 安装与运行
 
-[Linux](#linux) | [macOS](#macos) | [Windows](#windows)
-
----
-
-### Linux
-```bash
+| Linux | macOS | Windows |
+|---|---|---|
+|```bash
 git clone https://github.com/blockchain-src/fortytwo-console-app.git
 cd fortytwo-console-app
 chmod +x linux.sh
 sudo ./linux.sh
-```
-
-### macOS
-```bash
+```|```bash
 git clone https://github.com/blockchain-src/fortytwo-console-app.git
 cd fortytwo-console-app
 chmod +x macos.sh
 sudo ./macos.sh
-```
-
-### Windows
-```powershell
+```|```powershell
 Set-ExecutionPolicy Bypass -Scope CurrentUser
 git clone https://github.com/blockchain-src/fortytwo-console-app.git
 cd fortytwo-console-app
 .\windows.ps1
-```
+```|
 
 ---
 
